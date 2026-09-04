@@ -65,6 +65,22 @@ See `../literature/SYNTHESIS_biomedical.md` for the full table.
 - El-Yaniv and Wiener 2010 (selective classification foundations).
 - Ratcliff 1978 (DDM foundational).
 
+## Mathematical / computational-neuroscience anchors (tick 3, 2026-09-04)
+
+Directly added by Aayush's request for strongly math-based computational
+neuroscience literature. Full notes under `../literature/`.
+
+| Component / concern | Anchor | Slug |
+| --- | --- | --- |
+| Analog wave computation (top-down control, mesoscale modulation) | Miller, Brincat, Roy 2026 | pubmed-42618509 |
+| Low-dim latents from high-dim activity (solvable RNN model, NCE) | Schmutz et al. 2025 | pubmed-40502061 |
+| Embedding-theorem bounds on internal manifold dimension | O'Reilly-Shah + Selvitella 2026 | pubmed-42599379 |
+| Unbounded dimensionality scaling with neuron count | Manley et al. 2024 | pubmed-38452763 |
+
+These sit on the physics + math side and inform gates G6 (mechanism),
+G8 (external validity across recording scales), G12 (dimensionality
+claims paired with recording scale).
+
 ## Gaps still open
 
 - Working memory decoding anchor.

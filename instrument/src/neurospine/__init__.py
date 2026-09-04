@@ -17,6 +17,7 @@ from .abstention import (
     evaluate_triad,
     sign_concordance_binomial_p,
 )
+from .calibration import SplitConformalCalibration
 from .contract import (
     COGNITIVE_DARK_MATTER_DOMAINS,
     FIELD_GATES,
@@ -33,6 +34,7 @@ __all__ = [
     "NotYetGatedError",
     "Neurospine",
     "ProviderGates",
+    "SplitConformalCalibration",
     "Thought",
     "TriadResult",
     "evaluate_triad",
