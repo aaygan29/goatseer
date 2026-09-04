@@ -128,9 +128,22 @@ now part of the standing review protocol for any new math module.
 
 ## Follow-ups
 
-- Re-run the full adversarial audit; 35 of 47 agents were cut by a
-  session limit, including every `topology.py` and `dynamics.py`
-  verifier and the entire literature sweep.
+- Re-run the remaining adversarial audit; 35 of 47 agents were cut
+  by a session limit. The `topology.py` reduction has since been
+  verified directly (see below), but the `dynamics.py` verifiers and
+  the entire literature sweep still did not run.
 - The `topology.py` H1 boundary-matrix reduction was flagged by the
-  reviewer as "easy to get subtly wrong" but its verifiers never ran.
-  Treat it as unaudited.
+  reviewer as "easy to get subtly wrong" and its verifiers never ran
+  during the audit. RESOLVED 2026-09-04 by direct stress-testing
+  against spaces with analytically-known first Betti numbers (single
+  circle with finite-death pairing at full scale, figure-eight with
+  b1 = 2, two disjoint circles with b1 = 2, filled disk with no
+  dominant loop). The reduction is correct: an apparent
+  infinite-persistence class turned out to be a scale-cutoff artifact
+  (a loop needing edges of length L reads as essential at any
+  max_scale below L, which is the correct convention), not a pairing
+  error. Four hard-case regression tests added to
+  `test_topology.py`. The `topology.py` module is no longer
+  unaudited.
+
+Still outstanding:

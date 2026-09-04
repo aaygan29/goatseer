@@ -157,3 +157,87 @@ class TestPersistencePair:
     def test_infinite_death(self) -> None:
         p = PersistencePair(dimension=0, birth=0.0, death=float("inf"))
         assert math.isinf(p.persistence)
+
+
+class TestH1HardCases:
+    """Regression tests for the H1 boundary-matrix reduction against
+    spaces with analytically-known first Betti numbers. Added
+    2026-09-04 after ADR-010 flagged the H1 reduction as unaudited.
+
+    Each test pins the scale explicitly, because Vietoris-Rips
+    persistence depends on the filtration scale: a loop that needs
+    edges of length L to be filled will read as an essential
+    (infinite-persistence) class at any max_scale < L. That is
+    correct behavior, not a bug, so the tests choose scales where
+    the expected homology is actually resolved.
+    """
+
+    @staticmethod
+    def _circle(n, cx, cy, r, seed):
+        rng = np.random.default_rng(seed)
+        th = np.sort(rng.uniform(0.0, 2 * math.pi, n))
+        return np.c_[cx + r * np.cos(th), cy + r * np.sin(th)]
+
+    def test_single_circle_loop_has_finite_death_at_full_scale(self) -> None:
+        """The canonical check the earlier suite missed: at a max_scale
+        large enough to fill the loop, the H1 class must DIE (finite
+        persistence), not persist to infinity. A reduction that fails
+        to pair the loop with its filling 2-simplex would report
+        infinite persistence here."""
+        pts = self._circle(20, 0, 0, 1, seed=42)
+        D = pairwise_distances(pts)
+        h1 = vietoris_rips_h1(D, max_scale=float(D.max()))
+        finite = [p for p in h1 if p.death != float("inf")]
+        assert len(finite) >= 1, "loop must have a finite-death pair at full scale"
+        top = max(finite, key=lambda p: p.persistence)
+        # Born near the nearest-neighbour spacing, dies near the diameter.
+        assert 0.0 < top.birth < top.death <= float(D.max()) + 1e-9
+
+    def test_figure_eight_has_two_loops(self) -> None:
+        """Two unit circles sharing a neighbourhood: b1 = 2."""
+        c1 = self._circle(30, 0, 0, 1, seed=3)
+        c2 = self._circle(30, 2.0, 0, 1, seed=4)
+        pts = np.vstack([c1, c2])
+        D = pairwise_distances(pts)
+        h1 = vietoris_rips_h1(D, max_scale=float(D.max()))
+        finite = sorted(
+            [p for p in h1 if np.isfinite(p.persistence)],
+            key=lambda p: -p.persistence,
+        )
+        assert len(finite) >= 2
+        # The two dominant loops should both be substantial and the
+        # third (if any) much smaller.
+        assert finite[1].persistence > 0.5
+        if len(finite) > 2:
+            assert finite[1].persistence > 2 * finite[2].persistence
+        # Betti-1 at a scale where both loops are alive.
+        b1 = betti_curve(h1, np.array([0.9]), dimension=1)
+        assert b1[0] == 2
+
+    def test_two_disjoint_circles_betti_one_is_two(self) -> None:
+        """Two well-separated circles with different samplings. The
+        loops are born at different scales, so Betti-1 climbs to 2 only
+        once both are born. This pins the scale where both are alive."""
+        pts = np.vstack([
+            self._circle(25, 0, 0, 1, seed=1),
+            self._circle(25, 10, 0, 1, seed=2),
+        ])
+        D = pairwise_distances(pts)
+        # Cap below the inter-circle gap so we do not build spurious
+        # triangles spanning the two components.
+        h1 = vietoris_rips_h1(D, max_scale=3.0)
+        b1 = betti_curve(h1, np.array([1.3]), dimension=1)
+        assert b1[0] == 2
+
+    def test_filled_disk_has_no_dominant_loop(self) -> None:
+        """A filled disk is contractible: no persistent H1. Any loops
+        found are small sampling artifacts, none dominant."""
+        rng = np.random.default_rng(9)
+        pts = rng.uniform(-1, 1, (80, 2))
+        pts = pts[np.linalg.norm(pts, axis=1) <= 1.0]
+        D = pairwise_distances(pts)
+        h1 = vietoris_rips_h1(D, max_scale=float(D.max()))
+        if h1:
+            top = max(p.persistence for p in h1 if np.isfinite(p.persistence))
+            # No loop should persist more than a fraction of the diameter.
+            assert top < 0.35 * float(D.max())
