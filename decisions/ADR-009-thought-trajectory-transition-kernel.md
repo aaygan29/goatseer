@@ -119,6 +119,81 @@ This is the first real-data run in the repo and the first test that
 the manifold + dynamics pipeline actually clears numerical identities
 against measured signal, not only synthetic ground truth.
 
+
+## Empirical finding on first real-data run (2026-09-04)
+
+Running the pipeline on PhysioNet EEG-BCI produced a result that
+sharpens this ADR and must be recorded before anyone builds on it.
+
+**Temporal structure is present. First-order Markov structure is
+not.**
+
+The 200-permutation shuffle null on the entropy rate is unambiguous
+for most subjects: entropy rates fall far below the shuffled null
+(z as extreme as -35), so the state sequence carries real temporal
+order beyond marginal occupancy. But the two standard
+Markov-assumption checks required by this ADR both FAIL on the same
+subjects:
+
+- Implied timescales do not plateau across the lag sweep
+  (coefficient of variation well above the 0.1 convention).
+- Chapman-Kolmogorov discrepancy between the directly-estimated
+  `T(k * lag)` and the propagated `T(lag)^k` reaches row total
+  variation around 0.4, far above the 0.1 convention.
+
+The two results are not contradictory. The shuffle null tests
+"is there ANY temporal dependence", the Markov checks test "is that
+dependence first-order at this lag". The honest reading is that the
+EEG covariance trajectory has memory, and that memory is NOT
+captured by a first-order chain on directly-observed prototype
+states.
+
+### Consequence for the contract
+
+The transition matrix remains a legitimate DESCRIPTOR of the
+trajectory. It is NOT a validated generative model. Therefore:
+
+- `Thought.trajectory_summary` fields (entropy rate, spectral gap,
+  effective dimension) are reportable as descriptive statistics of
+  the observed sequence.
+- Any claim that phrases them as properties of an underlying Markov
+  process is blocked until the validation passes.
+- The `mean_first_passage_time` and `committor` outputs, which are
+  meaningful only under a correct Markov model, must NOT be
+  reported for a subject whose Markov validation fails. Both
+  functions remain in `dynamics.py` because they are correct given
+  a valid `T`; the gating is a study-protocol matter, enforced in
+  `study/ANALYSIS_PLAN.md`.
+
+### Candidate explanations, ranked
+
+1. **Statistical power.** With ~125 epochs per subject and 6
+   prototype states, there are ~124 observed transitions to
+   estimate 30 free parameters, roughly 4 observations per
+   parameter. That is severely underpowered and can by itself
+   produce CK failure. Testable immediately by reducing the state
+   count or lengthening the recording.
+2. **Higher-order memory.** The dependence may genuinely extend
+   beyond one step. The verification suite already demonstrates that
+   the CK test detects a synthetic second-order sequence, so the
+   machinery can distinguish this case.
+3. **Hidden states.** The observed prototype label may be a noisy
+   emission of a latent chain, in which case a hidden Markov model
+   is the correct object and a directly-observed chain is
+   mis-specified by construction. This is the standard framing in
+   the MEG/EEG brain-state literature.
+4. **Wrong lag.** Markovianity may emerge at a longer lag than the
+   sweep covered.
+
+### Required next experiments
+
+- State-count sweep (k = 3, 4, 6, 8, 12) at fixed epoch length, to
+  separate power from model order.
+- Epoch-length sweep at fixed state count.
+- Longer per-subject recordings (more runs per subject from the
+  same dataset) to raise transitions-per-parameter above 10.
+- If 1 and 4 are ruled out, promote to an HMM via ADR-011.
+
 ## Consequences
 
 - One new module (`dynamics.py`), one new provider Protocol

@@ -333,3 +333,170 @@ def summarize_trajectory(
         effective_dimension=eff_dim,
         metastable_labels=labels,
     )
+
+
+# --------------------------------------------------------------------
+# Markov-assumption validation (ADR-009 required checks)
+# --------------------------------------------------------------------
+
+
+def estimate_transition_matrix_at_lag(
+    state_indices: np.ndarray,
+    num_states: int,
+    lag: int,
+    laplace: float = 0.0,
+) -> np.ndarray:
+    """Transition matrix at a given lag time.
+
+    `T(lag)[i, j] = P(state_{t+lag} = j | state_t = i)`, estimated by
+    counting `(x_t, x_{t+lag})` pairs. Lag-time selection is the
+    central methodological choice in Markov state modeling: too short
+    and the process is not yet Markov, too long and statistics are
+    wasted.
+    """
+    state_indices = np.asarray(state_indices)
+    if lag < 1:
+        raise ValueError(f"lag must be >= 1; got {lag}")
+    if state_indices.size <= lag:
+        raise ValueError(
+            f"need more than {lag} samples to estimate at lag {lag}; "
+            f"got {state_indices.size}"
+        )
+    counts = np.full((num_states, num_states), float(laplace))
+    for a, b in zip(state_indices[:-lag], state_indices[lag:]):
+        counts[int(a), int(b)] += 1.0
+    row_sums = counts.sum(axis=1, keepdims=True)
+    empty = (row_sums.squeeze() == 0)
+    if np.ndim(empty) == 0:
+        empty = np.array([empty])
+    if empty.any():
+        counts[empty] = 0.0
+        for idx in np.where(empty)[0]:
+            counts[idx, idx] = 1.0
+        row_sums = counts.sum(axis=1, keepdims=True)
+    return counts / row_sums
+
+
+def implied_timescales(
+    state_indices: np.ndarray,
+    num_states: int,
+    lags: list[int],
+    n_timescales: int = 3,
+    laplace: float = 1.0 / 1024,
+) -> dict:
+    """Implied timescales across a lag sweep.
+
+    For each lag, `t_i(lag) = -lag / log(|lambda_i(lag)|)` for the
+    subdominant eigenvalues. If the process is Markov at lag `L`, the
+    implied timescales become independent of lag for `lag >= L`: they
+    plateau. A plateau is the standard justification for the Markov
+    assumption; monotonic drift without plateau falsifies it.
+
+    Returns the timescale curves plus a plateau diagnostic: the
+    coefficient of variation of each timescale over the upper half of
+    the lag range. A CV below `plateau_cv_threshold` (default 0.1)
+    for the slowest timescale is the conventional plateau criterion.
+    """
+    if not lags:
+        raise ValueError("lags must be non-empty")
+    if n_timescales < 1:
+        raise ValueError(f"n_timescales must be >= 1; got {n_timescales}")
+
+    curves = np.full((len(lags), n_timescales), np.nan)
+    for li, lag in enumerate(sorted(lags)):
+        T = estimate_transition_matrix_at_lag(
+            state_indices, num_states, lag, laplace=laplace
+        )
+        eigvals = np.linalg.eigvals(T)
+        moduli = np.sort(np.abs(eigvals))[::-1]
+        # Skip the stationary eigenvalue (modulus 1) and take the next ones.
+        sub = moduli[1 : 1 + n_timescales]
+        for ti, lam in enumerate(sub):
+            if 0.0 < lam < 1.0:
+                curves[li, ti] = -lag / np.log(lam)
+            else:
+                curves[li, ti] = np.nan
+
+    sorted_lags = sorted(lags)
+    upper_half = curves[len(sorted_lags) // 2 :, :]
+    cvs = []
+    for ti in range(n_timescales):
+        col = upper_half[:, ti]
+        col = col[np.isfinite(col)]
+        if col.size < 2 or col.mean() == 0:
+            cvs.append(float("nan"))
+        else:
+            cvs.append(float(col.std(ddof=1) / abs(col.mean())))
+
+    slowest_cv = cvs[0] if cvs else float("nan")
+    return {
+        "lags": sorted_lags,
+        "timescales": curves.tolist(),
+        "upper_half_cv": cvs,
+        "slowest_timescale_cv": slowest_cv,
+        "plateau_detected": bool(
+            np.isfinite(slowest_cv) and slowest_cv < 0.1
+        ),
+    }
+
+
+def chapman_kolmogorov_test(
+    state_indices: np.ndarray,
+    num_states: int,
+    lag: int,
+    k_values: list[int] | None = None,
+    laplace: float = 1.0 / 1024,
+) -> dict:
+    """Chapman-Kolmogorov test of the Markov assumption.
+
+    If the process is Markov at lag `L`, then
+    `T(k * L) == T(L)^k` for all integer `k >= 1`. This function
+    estimates both sides directly from data and reports their
+    discrepancy.
+
+    Metric: the mean and max absolute row-wise total-variation
+    distance between the estimated `T(k*L)` and the propagated
+    `T(L)^k`. TV distance between two probability rows p and q is
+    `0.5 * sum |p_i - q_i|`, so it lives in `[0, 1]` and is directly
+    interpretable.
+
+    A common acceptance criterion is max row TV below 0.1; that
+    threshold is a convention, not a theorem, and is reported
+    alongside the raw numbers so the reader can judge.
+    """
+    if k_values is None:
+        k_values = [2, 3, 4]
+    T_lag = estimate_transition_matrix_at_lag(
+        state_indices, num_states, lag, laplace=laplace
+    )
+    results = []
+    for k in k_values:
+        if state_indices.size <= k * lag:
+            results.append({
+                "k": int(k),
+                "skipped": True,
+                "reason": f"sequence too short for lag {k * lag}",
+            })
+            continue
+        T_direct = estimate_transition_matrix_at_lag(
+            state_indices, num_states, k * lag, laplace=laplace
+        )
+        T_propagated = np.linalg.matrix_power(T_lag, k)
+        row_tv = 0.5 * np.abs(T_direct - T_propagated).sum(axis=1)
+        results.append({
+            "k": int(k),
+            "skipped": False,
+            "mean_row_tv": float(row_tv.mean()),
+            "max_row_tv": float(row_tv.max()),
+        })
+
+    live = [r for r in results if not r["skipped"]]
+    worst = max((r["max_row_tv"] for r in live), default=float("nan"))
+    return {
+        "lag": int(lag),
+        "per_k": results,
+        "worst_max_row_tv": worst,
+        "passes_conventional_threshold": bool(
+            np.isfinite(worst) and worst < 0.1
+        ),
+    }

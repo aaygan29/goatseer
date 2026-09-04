@@ -108,6 +108,27 @@ Failing any of these downgrades the trajectory result to a
 descriptive pipeline demonstration, which is how the 2026-09-04
 EEG-BCI run is currently classified.
 
+### Reporting gate on trajectory outputs
+
+Because the first real-data run showed temporal structure WITHOUT
+first-order Markov validity, the trajectory outputs are split into
+two tiers:
+
+**Tier 1, reportable as descriptive statistics of the observed
+sequence** (no Markov assumption required): stationary distribution
+of observed occupancy, entropy rate, spectral gap, effective
+dimension, and the shuffle-null verdict.
+
+**Tier 2, reportable ONLY when implied-timescale plateau AND
+Chapman-Kolmogorov both pass for that subject**: mean first passage
+time, committor functions, and any statement phrased as a property
+of an underlying Markov process rather than of the observed
+sequence.
+
+A subject failing validation contributes to Tier 1 results and is
+explicitly excluded from Tier 2 results, with the exclusion count
+reported.
+
 ## Handling of missing data
 
 - Trials with more than 20 percent motion or artifact rejection are

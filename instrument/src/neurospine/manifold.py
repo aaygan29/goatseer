@@ -233,6 +233,37 @@ def airm_frechet_mean(
     return P
 
 
+
+def airm_geodesic_min_distance(
+    P: np.ndarray, Q: np.ndarray, R: np.ndarray, n_samples: int = 201
+) -> tuple[float, float]:
+    """Minimum AIRM distance from the geodesic `P -> Q` to the point `R`.
+
+    Returns `(min_distance, argmin_t)`.
+
+    There is no closed form for the closest approach of an AIRM
+    geodesic to an arbitrary third SPD point, so this samples the
+    geodesic uniformly in the parameter `t` on `[0, 1]` and takes the
+    minimum. Sampling density is the accuracy knob: the returned
+    minimum is an UPPER bound on the true minimum, and the bound
+    tightens as `n_samples` grows.
+
+    This exists because evaluating a clearance at a single interior
+    point (for example the midpoint `t = 0.5`) certifies nothing about
+    the rest of the path. A forbidden region can sit exactly on the
+    trajectory while the midpoint distance is comfortably large.
+    """
+    if n_samples < 2:
+        raise ValueError(f"n_samples must be >= 2; got {n_samples}")
+    best_d = float("inf")
+    best_t = 0.0
+    for t in np.linspace(0.0, 1.0, n_samples):
+        d = airm_distance(airm_geodesic(P, Q, float(t)), R)
+        if d < best_d:
+            best_d = d
+            best_t = float(t)
+    return float(best_d), best_t
+
 # --------------------------------------------------------------------
 # Grassmann primitives
 # --------------------------------------------------------------------
@@ -257,10 +288,42 @@ def grassmann_principal_angles(U: np.ndarray, V: np.ndarray) -> np.ndarray:
 
 
 def grassmann_distance(U: np.ndarray, V: np.ndarray) -> float:
-    """Geodesic (chordal) Grassmann distance: sqrt of sum of squared
-    principal angles."""
+    """Geodesic (arc-length) Grassmann distance: `sqrt(sum theta_i^2)`,
+    i.e. the 2-norm of the vector of principal angles.
+
+    This is the distance induced by the canonical metric on `Gr(k, n)`
+    (Edelman, Arias, Smith 1998). It is NOT the chordal distance; see
+    `grassmann_chordal_distance` for that, and note the two differ by
+    a non-constant factor (they agree only in the small-angle limit).
+
+    Bound: `0 <= d_geo <= sqrt(k) * pi / 2`.
+
+    Important: the geodesic distance is not of negative type, so a
+    Gram matrix built from it is generally indefinite. Do not use it
+    to construct a PSD kernel or a classical-MDS embedding. Use
+    `grassmann_chordal_distance` for those.
+    """
     theta = grassmann_principal_angles(U, V)
     return float(np.sqrt(np.sum(theta ** 2)))
+
+
+def grassmann_chordal_distance(U: np.ndarray, V: np.ndarray) -> float:
+    """Chordal (projection Frobenius) Grassmann distance:
+    `sqrt(sum sin^2 theta_i)`.
+
+    Equivalently `(1 / sqrt(2)) * || U U^T - V V^T ||_F` for
+    orthonormal-column U, V: it is the Euclidean distance between the
+    orthogonal projectors onto the two subspaces, which is why it
+    embeds isometrically in a Hilbert space and yields a PSD kernel.
+
+    Bound: `0 <= d_chord <= sqrt(k)`.
+
+    Use this, not `grassmann_distance`, whenever downstream code needs
+    negative type: kernel construction, classical MDS, or anything
+    assuming a Euclidean embedding of subspaces.
+    """
+    theta = grassmann_principal_angles(U, V)
+    return float(np.sqrt(np.sum(np.sin(theta) ** 2)))
 
 
 # --------------------------------------------------------------------

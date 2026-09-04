@@ -51,6 +51,7 @@ from .intervention import (
     score_intervention_channels,
 )
 from .manifold import (
+    airm_geodesic_min_distance,
     Family,
     LatentState,
     airm_distance,
@@ -60,6 +61,7 @@ from .manifold import (
     airm_inner,
     airm_log_map,
     airm_parallel_transport,
+    grassmann_chordal_distance,
     grassmann_distance,
     grassmann_principal_angles,
     spd_expm,
@@ -98,9 +100,11 @@ __all__ = [
     "airm_exp_map",
     "airm_frechet_mean",
     "airm_geodesic",
+    "airm_geodesic_min_distance",
     "airm_inner",
     "airm_log_map",
     "airm_parallel_transport",
+    "grassmann_chordal_distance",
     "grassmann_distance",
     "grassmann_principal_angles",
     "spd_expm",
