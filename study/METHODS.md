@@ -117,6 +117,84 @@ level above per-timepoint prediction: two sessions from the same
 subject should have topologically similar latent trajectories even
 where instantaneous predictions diverge.
 
+## Thought-trajectory transition dynamics (ADR-009)
+
+A thought is not a point on the cognitive-state manifold. It is a
+trajectory `M(t)`, and its complexity is summarized by the transition
+kernel `K(x, y) = P(state_{t+1} = y | state_t = x)` together with the
+invariants of the induced Markov process.
+
+Pipeline:
+
+1. **Window.** Segment the session into non-overlapping epochs. Epoch
+   length is a preregistered parameter; the current EEG default is
+   2 seconds and is under active challenge (see Open questions).
+2. **Represent.** One SPD matrix per epoch (covariance or
+   cross-spectral density), symmetrized and ridged to guarantee
+   strict positive-definiteness.
+3. **Discretize.** K-medoids on AIRM distance with Frechet-mean
+   prototype updates. The discretization respects the Riemannian
+   geometry rather than flattening the SPD cone into a Euclidean
+   vector space.
+4. **Estimate.** Count-based transition matrix with Laplace
+   smoothing; states never visited become self-loops so the matrix
+   stays row-stochastic.
+5. **Summarize.** Stationary distribution (left-Perron eigenvector),
+   Kolmogorov-Sinai entropy rate, spectral gap (second-largest
+   eigenvalue modulus), effective dimension `exp(H(pi))`, mean first
+   passage times, committor functions, and PCCA metastable
+   decomposition.
+6. **Null-test.** Permutation control: shuffle the state sequence
+   (destroying temporal order, preserving marginal occupancy
+   exactly) and recompute the entropy rate 200 times. Report the
+   observed value, the null mean and standard deviation, the
+   z-score, and a one-sided empirical p-value. This separates "there
+   is temporal structure" from "some states are simply more common,"
+   and is the G4 specificity plus G5 confound control for every
+   trajectory claim.
+
+Interpretation guide:
+
+- **Stationary distribution** says where the trajectory dwells.
+- **Mean first passage time** says how long it takes to reach a
+  target state from anywhere else.
+- **Committor** says which basin the trajectory commits to from a
+  given state.
+- **PCCA labels** say what the metastable basins are.
+- **Entropy rate** says how much of the trajectory is predictable at
+  all. An entropy rate at the `log(k)` ceiling means the sequence is
+  memoryless at this granularity and the transition matrix is a
+  description of the marginal, not of dynamics.
+
+### Open questions on this layer
+
+The first real-data run (`experiments/spd_transition_eegbci/`) found
+that subjects differ sharply: some show entropy rates far below the
+shuffled null (strong temporal structure) and some are
+indistinguishable from it. Before that split can be reported as an
+individual difference rather than a methodological artifact, the
+following must be run:
+
+- **Lag-time sweep and implied timescales.** Standard Markov-state-
+  model practice: estimate the transition matrix at several lag
+  times and check that the implied timescales
+  `t_i = -lag / log(lambda_i)` plateau. A plateau justifies the
+  Markov assumption at that lag; no plateau means the model is
+  mis-specified.
+- **Chapman-Kolmogorov test.** Compare `T(k * lag)` against
+  `T(lag)^k`. Divergence falsifies the Markov assumption directly.
+- **State-count sensitivity.** Sweep the number of prototypes and
+  check that the structure verdict is stable. If the verdict flips
+  with `k`, it is an artifact of the discretization.
+- **Epoch-length sensitivity.** Same sweep over epoch duration.
+- **Channel-count sensitivity.** The current 5-channel subset is a
+  convenience choice; the SPD dimension changes the AIRM geometry
+  and could drive the result.
+
+Until those are run, the EEG transition-kernel result is a pipeline
+demonstration with a null control, not a scientific claim about
+individual differences.
+
 ## Physics anchor
 
 Frame the individual-scale pipeline as a statistical-mechanics problem:

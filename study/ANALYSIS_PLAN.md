@@ -78,6 +78,36 @@ explicitly per the analytic-integrity gate (G12).
 - Attention proxy sweep: covariate-adjust for vigilance; check that
   decoders do not collapse to attention prediction.
 
+## Trajectory-dynamics analyses (ADR-009)
+
+### Primary: does the trajectory carry temporal structure?
+
+- Unit of analysis: subject-session.
+- Test: 200-permutation shuffle null on the Kolmogorov-Sinai entropy
+  rate of the discretized state sequence. One-sided (below), because
+  lower entropy rate means more structure.
+- Statistic: empirical p-value plus a z-score against the null
+  distribution.
+- Multiple comparisons across subjects: Benjamini-Hochberg FDR 0.05.
+- Sign concordance across subjects: two-sided binomial on the count
+  of subjects whose observed entropy rate falls below the null mean.
+  This is the EEG analogue of the G-fMRI.2 sign-concordance leg.
+
+### Required Markov-assumption validation (currently NOT run)
+
+No trajectory result is reportable as a scientific claim until all
+four pass:
+
+1. Implied-timescale plateau across a lag-time sweep.
+2. Chapman-Kolmogorov agreement between `T(k * lag)` and `T(lag)^k`.
+3. State-count stability: the structure verdict does not flip across
+   a sweep of prototype counts.
+4. Epoch-length stability: same, across epoch durations.
+
+Failing any of these downgrades the trajectory result to a
+descriptive pipeline demonstration, which is how the 2026-09-04
+EEG-BCI run is currently classified.
+
 ## Handling of missing data
 
 - Trials with more than 20 percent motion or artifact rejection are

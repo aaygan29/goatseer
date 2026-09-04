@@ -104,14 +104,56 @@ prior project silently props up a NEUROSPINE claim.
 
 ## Status (2026-09-04)
 
-- Phase 0 (instrument freeze): in progress. `Thought` contract frozen;
-  reference harness passes 30 synthetic-first tests.
-- First portfolio scoring pass complete: 4 green, 11 yellow, 3 red.
-- 34 external literature anchors indexed; biomedical side pending
-  pubmed retry after rate-limit reset.
-- ADRs 000 through 006 accepted (scaffold, license, citation doctrine,
-  extraction protocol, pivot from auditor to study, two retirements).
-- Next: complete pubmed synthesis, then advance the highest-leverage
-  gate gaps flagged by the first scoring pass
-  (`G-fMRI.2` sign-concordance binomial for `anesthesia-bridge` and
-  `decision-phenotype`).
+- **Instrument**: `Thought` contract frozen; five real modules land
+  (`manifold.py`, `topology.py`, `dynamics.py`, `abstention.py`,
+  `calibration.py`, `intervention.py`). **124 tests pass**, all of
+  them mathematical-identity or analytically-known-value checks.
+- **First real-data run**: `experiments/spd_transition_eegbci/`
+  executes the ADR-009 transition kernel on PhysioNet EEG-BCI. See
+  that directory for the result and its honest limitations.
+- **Portfolio**: first scoring pass complete (4 green, 11 yellow,
+  3 red). Two retirements recorded (ADR-005, ADR-006).
+- **Literature**: 40+ external anchors indexed across
+  `SYNTHESIS_computational.md`, `SYNTHESIS_biomedical.md`, and
+  `SYNTHESIS_math_neuro.md`; 33+ BibTeX entries.
+- **ADRs**: 000 through 009 (scaffold, license, citation doctrine,
+  extraction protocol, pivot to research study, two retirements,
+  brain_state proposal, Riemannian-topological framework, transition
+  kernel).
+
+## What NEUROSPINE actually is
+
+Three things layered on the same mathematics:
+
+1. **Cartography.** A subject's cognitive state is a point on a
+   Riemannian manifold (SPD covariance under the affine-invariant
+   metric, Grassmann subspace, or a learned latent manifold), not a
+   flat feature vector. `manifold.py` implements the AIRM geodesics,
+   log/exp maps, parallel transport, and Frechet means that make
+   that well-defined.
+
+2. **Trajectory.** A thought is not a point, it is a path. The
+   probability-transition-matrix heuristic in `dynamics.py`
+   summarizes where a thought travels: stationary distribution
+   (where it dwells), mean first passage time (how long to get
+   somewhere), committor (which basin it commits to), PCCA
+   (what the basins are), entropy rate (how much is predictable at
+   all). Topological invariants in `topology.py` give the
+   session-level signature that survives pointwise variation.
+
+3. **Intervention.** Given a current state and a target state,
+   `intervention.py` ranks candidate intervention channels by the
+   affine-invariant cosine alignment of each channel's pushforward
+   with the geodesic tangent, and reports a safety margin to a
+   declared out-of-scope region. Every intervention requires a
+   purpose from an ADR-managed registry;
+   `PurposeNotRegisteredError` raises at construction time.
+
+## Next
+
+The single highest-value open item is Markov-assumption validation
+on the trajectory layer: implied-timescale plateau, Chapman-Kolmogorov
+test, and state-count / epoch-length sensitivity sweeps. Until those
+run, the EEG transition-kernel result is a pipeline demonstration
+with a null control, not a claim about individual differences. See
+`study/ANALYSIS_PLAN.md`.
