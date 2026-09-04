@@ -93,7 +93,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    result = evaluate_thought_text(args.text, consent=args.consent)
+    try:
+        result = evaluate_thought_text(args.text, consent=args.consent)
+    except (PermissionError, ValueError) as exc:
+        parser.error(str(exc))
+
     print(json.dumps(asdict(result), indent=2))
 
 
