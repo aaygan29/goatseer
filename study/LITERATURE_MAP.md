@@ -45,16 +45,34 @@ after pubmed scan retry).
 | External-citation doctrine | ADR-002 (repo-internal) | decisions/ADR-002 |
 | Extraction re-verification | ADR-003 (repo-internal) | decisions/ADR-003 |
 
-## Gaps
+## Biomedical anchors added tick 2 (partial pubmed pass, 2026-09-04)
 
-- Test-retest reliability of neural decoders: literature anchor
-  missing (pubmed scan pending).
-- Individual differences in brain-behavior mapping: pubmed pending.
-- Decision-neuroscience DDM anchor: pubmed pending.
-- Affect-decoding primary anchor: only taxonomy so far; pubmed
-  pending.
-- Working memory decoding anchor: pubmed pending.
-- Vovk et al. and Angelopoulos and Bates entries: to be added to
-  `references.bib` even though these are textbook / seminal.
-- El-Yaniv and Wiener 2010: same.
-- Biomechanics anchor: explicitly deferred.
+See `../literature/SYNTHESIS_biomedical.md` for the full table.
+
+| Component | Biomedical anchor | Slug |
+| --- | --- | --- |
+| CalibrationProvider (hierarchical trial-level) | Freund et al. 2025 | pubmed-39957839 |
+| RewardDecoder (validated cross-task) | Speer et al. Brain Reward Signature 2023 | pubmed-36878456 |
+| AffectDecoder (MVPA categorical) | Putkinen et al. 2021 | pubmed-33367590 |
+| PerceptionDecoder (RNN dynamic) | Misra et al. 2021 | pubmed-34478442 |
+| DecisionDecoder (DDM parameterization) | Saulin et al. 2024 | pubmed-38970361 |
+| DecisionDecoder (IS-RSA individual differences) | Jiang et al. 2024 | pubmed-39126347 |
+
+## Textbook / seminal entries added to references.bib (tick 2, 2026-09-04)
+
+- Vovk, Gammerman, Shafer 2005 (conformal prediction textbook).
+- Angelopoulos and Bates 2021 (conformal prediction tutorial).
+- El-Yaniv and Wiener 2010 (selective classification foundations).
+- Ratcliff 1978 (DDM foundational).
+
+## Gaps still open
+
+- Working memory decoding anchor.
+- BCI / intent decoding (thought / speech).
+- Sample size and reproducibility in neuroimaging (Marek 2022 style).
+- Semantic / language decoding from fMRI (Huth-style).
+- Cross-subject transfer beyond RAVEN.
+- EEG-based decoder test-retest.
+- Multimodal neural + behavioral fusion.
+- Biomechanics of neural systems: explicitly deferred until any
+  NEUROSPINE dimension touches motor prediction.

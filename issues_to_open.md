@@ -4,21 +4,27 @@ Everything here becomes a live issue, a PR, or an ADR retiring it.
 
 ## Immediate (do next tick)
 
-- [ ] Retry the pubmed literature crawl (failed at rate limit
-      2026-09-03). Target ~30 additional biomedical notes plus
-      `literature/SYNTHESIS_biomedical.md`.
-- [ ] Enable Issues and Projects on `aaygan29/NEW_REPO`:
-      `gh repo edit --enable-issues --enable-projects`.
-- [ ] After scaffold PR merges, create labels: `lit-review`,
-      `gate-fail`, `instrument`, `retirement`, `blocked-on-auth`,
-      `synthetic-first`, `verification`, `pubmed-pending`.
-- [ ] Open per-project tracking issues (18 total), titled
-      "[<slug>] first evaluation follow-through" linked to
-      `portfolio/<slug>/evaluation.md`.
+- [x] Retry the pubmed literature crawl (partial done 2026-09-04:
+      6 notes for test-retest, reward, affect, dynamic decoding, DDM).
+      Full crawl still open: working memory decoding, BCI / intent
+      decoding, sample-size reproducibility (Marek 2022 style),
+      cross-subject generalization beyond RAVEN, semantic / language
+      decoding (Huth-style), memory recall + hippocampal reactivation,
+      EEG test-retest, multimodal fusion. Queue as
+      `pubmed-round-2` for the next tick.
+- [x] Enabled Issues and Projects on `aaygan29/NEW_REPO`
+      (2026-09-04).
+- [x] Labels created 2026-09-04: `lit-review`, `gate-fail`,
+      `instrument`, `retirement`, `blocked-on-auth`, `synthetic-first`,
+      `verification`, `pubmed-pending`, `portfolio`, `red`, `yellow`,
+      `green`.
+- [x] Opened 18 per-project tracking issues (#4 to #21) linking
+      each `portfolio/<slug>/evaluation.md` to its top action from
+      the first scoring pass (2026-09-04).
 - [ ] Compute the missing G-fMRI.2 sign-concordance binomial for
-      `anesthesia-bridge` (Pillar A LZc across 26 subjects) and for
-      `decision-phenotype` (NAcc/insula loss channel at n=40). Both
-      are cheap statistical add-ons; both are the single missing leg.
+      `anesthesia-bridge` (issue #6, Pillar A LZc across 26 subjects)
+      and for `decision-phenotype` (issue #9, NAcc/insula loss channel
+      at n=40). Helper landed this tick: `neurospine.evaluate_triad`.
 
 ## Requires user action (Aayush)
 
@@ -57,6 +63,7 @@ Everything here becomes a live issue, a PR, or an ADR retiring it.
       `portfolio/*/evaluation.md` deltas.
 - [ ] Add a CODEOWNERS file once the instrument has real code
       landing across the extractions.
-- [ ] Backfill BibTeX entries for the seminal external theorists
+- [x] Backfilled BibTeX for the seminal external theorists
       (Vovk et al. 2005; Angelopoulos and Bates 2021; El-Yaniv and
-      Wiener 2010; Ratcliff 1978) into `literature/references.bib`.
+      Wiener 2010; Ratcliff 1978) 2026-09-04. 17 entries total in
+      `literature/references.bib`.

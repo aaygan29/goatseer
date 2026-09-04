@@ -11,6 +11,12 @@ Every prediction field is gated per `FIELD_GATES` in `contract.py`. See
 `study/PROTOCOL.md` for the research study this instrument implements.
 """
 
+from .abstention import (
+    GoltermannHuthAbstention,
+    TriadResult,
+    evaluate_triad,
+    sign_concordance_binomial_p,
+)
 from .contract import (
     COGNITIVE_DARK_MATTER_DOMAINS,
     FIELD_GATES,
@@ -23,9 +29,13 @@ from .harness import Neurospine, ProviderGates
 __all__ = [
     "COGNITIVE_DARK_MATTER_DOMAINS",
     "FIELD_GATES",
+    "GoltermannHuthAbstention",
     "NotYetGatedError",
     "Neurospine",
     "ProviderGates",
     "Thought",
+    "TriadResult",
+    "evaluate_triad",
     "field_is_ready",
+    "sign_concordance_binomial_p",
 ]
