@@ -11,7 +11,7 @@
 
 ## Mechanism
 
-TBD (unindexed; queued for WebFetch).
+TBD (unindexed; WebFetch failed 2026-09-03: Nature authentication redirect; paywall-gated).
 
 ## Preliminary relevance mapping
 

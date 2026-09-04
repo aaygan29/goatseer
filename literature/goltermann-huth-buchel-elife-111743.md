@@ -11,7 +11,7 @@
 
 ## Mechanism
 
-TBD (unindexed; queued for WebFetch).
+TBD (unindexed; WebFetch failed 2026-09-03: HTTP 404 Not Found; article link may be incorrect or removed).
 
 ## Preliminary relevance mapping
 
