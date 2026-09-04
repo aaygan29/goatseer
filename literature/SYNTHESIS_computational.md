@@ -94,6 +94,71 @@ landscape" is grounded in:
 - `biorxiv-2024-05-15-593712` Synaptic pruning as Bayesian model
   selection. Complementary biological mechanism for sparsification.
 
+## Wave-dynamics and analog computation (tick 3, 2026-09-04)
+
+Miller, Brincat, Roy (J. Neuroscience 2026, pubmed-42618509) argue that
+cognition and consciousness arise from bidirectional interactions
+between neuronal spiking and rhythmic electric field activity (brain
+waves). Top-down control coordinates neural populations into
+low-dimensional, task-oriented dynamics; brain waves are the
+mesoscale substrate for that coordination, and support analog
+computation, and route multifunctional neurons into context-dependent
+roles.
+
+Concrete consequences for NEUROSPINE:
+
+- Every fMRI-grounded predictor should be conditioned on the
+  concurrent mesoscale wave state; the Goltermann/Huth triad becomes
+  more informative when evaluated per wave-state bin rather than
+  pooled across states.
+- The `PerceptionDecoder`, `MemoryDecoder`, and `RewardDecoder`
+  should treat multifunctional-neuron context switching as a first-
+  class confound (G4).
+- A future `brain_state` field on the `Thought` tuple is warranted
+  once EEG-fMRI concurrent recordings enter the study (see
+  `issues_to_open.md`).
+
+## Neural-manifold math (tick 3, 2026-09-04)
+
+Three math-heavy anchors that together set the theoretical bounds
+NEUROSPINE decoders must respect:
+
+- `pubmed-40502061` (Schmutz et al., bioRxiv 2025): analytically
+  solvable RNN whose low-dim latent dynamics generate a high-dim
+  activity manifold. Introduces Neural Cross-Encoder (NCE). Warning
+  from mouse V1: grating and spontaneous activity reduce to low-dim
+  latents, natural-image responses do not. The covariance eigenspectrum
+  alone cannot recover latent dimensionality under nonlinearity.
+- `pubmed-42599379` (O'Reilly-Shah and Selvitella, J. Comp. Neurosci.
+  2026): proves via generalized synchronization plus delay-embedding
+  theory (Whitney, Takens) that contracting RNNs develop internal
+  manifolds embedding the sensory dynamics driving them. Hidden
+  dimension depends on the intrinsic dimension of the sensory
+  manifold, not the world. Prediction-separation result: prediction
+  error sets the resolution below which distinct-future states are
+  guaranteed to be separated in neural state space.
+- `pubmed-38452763` (Manley et al., Neuron 2024): light-beads
+  microscopy on up to 1 million mouse cortical neurons shows
+  unbounded scaling of dimensionality with neuron number; 16 dims
+  hold half the variance and correlate with behavior, but higher
+  dims are fine-grained cortex-wide ensembles without immediate
+  behavioral correlates.
+
+Together these three anchors set the following working assumptions
+for NEUROSPINE:
+
+- Per-subject low-dim latents are theoretically well-founded
+  (Schmutz, O'Reilly-Shah) but only up to a resolution set by the
+  achieved prediction error (O'Reilly-Shah's prediction-separation
+  bound).
+- Reported latent dimensionality is always paired with the recording
+  scale it was derived at (Manley); low-dim claims at small N do
+  not automatically transfer to large N.
+- Any topological analysis layer in `study/METHODS.md` inherits its
+  mathematical grounding from the embedding-theorem framework of
+  O'Reilly-Shah + Selvitella and from persistent-homology anchors
+  already indexed (arxiv-2210.09092, arxiv-2512.08637).
+
 ## Cross-subject transfer bridge
 
 - `raven-jeon-sobotka-2510-21332` RAVEN weak-to-strong under
