@@ -151,14 +151,16 @@ Three things layered on the same mathematics:
 
 ## Next
 
-A council review (2026-09-04) corrected an overclaim: the earlier
-"EEG covariance trajectories are not first-order Markov" was
-confounded by discretization (a function of a Markov process is
-generically not Markov). Against a construction-matched Markov null,
-only 3 of 8 subjects deviate, at k=2 only. The two robust results
-are: (a) temporal structure exists beyond marginal occupancy (shuffle
-null, valid), and (b) a minority of subjects show genuine deviation
-from first-order Markov structure. The natural next model is a hidden
-Markov model, where a latent chain can be Markov even when the
-observed prototype sequence is not. See ADR-009 CORRECTION and
-`experiments/spd_transition_eegbci/markov_confound_control.py`.
+A council review (2026-09-04) corrected an overclaim in the discretized
+Markov test (a function of a Markov process is generically not Markov,
+so discretization manufactured apparent non-Markovianity). The next
+tier resolved it properly: a Gaussian hidden Markov model on the
+continuous AIRM tangent-space embedding, compared against VAR(1) (the
+canonical first-order continuous model) with a VAR(1) surrogate null
+shipped as the control. Result: 8/8 subjects show the HMM beating
+VAR(1) on held-out EEG beyond the surrogate null (p=0.00 each), while
+on genuinely-first-order surrogate data the HMM correctly does not win.
+The EEG covariance trajectory carries latent-state structure a
+first-order model misses, confound-controlled, in every subject. See
+ADR-012 and `experiments/hmm_eeg/`. Next: session-to-session
+replicability of the HMM states, and BIC state-count selection.

@@ -42,6 +42,7 @@ from .dynamics import (
     summarize_trajectory,
 )
 from .harness import Neurospine, ProviderGates
+from .hmm import GaussianHMM
 from .intervention import (
     ChannelScore,
     Intervention,
@@ -68,6 +69,8 @@ from .manifold import (
     spd_invsqrtm,
     spd_logm,
     spd_sqrtm,
+    spd_tangent_embedding,
+    spd_tangent_vector,
 )
 from .topology import (
     PersistencePair,
@@ -86,6 +89,7 @@ __all__ = [
     "Thought",
     "field_is_ready",
     # Harness + providers
+    "GaussianHMM",
     "GoltermannHuthAbstention",
     "Neurospine",
     "ProviderGates",
@@ -111,6 +115,8 @@ __all__ = [
     "spd_invsqrtm",
     "spd_logm",
     "spd_sqrtm",
+    "spd_tangent_embedding",
+    "spd_tangent_vector",
     # Topology primitives (ADR-008)
     "PersistencePair",
     "betti_curve",

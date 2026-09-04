@@ -24,3 +24,4 @@ node_modules/
 # Experiment outputs (regenerate with `make reproduce`)
 experiments/**/results/
 mne_data/
+experiments/hmm_eeg/results/

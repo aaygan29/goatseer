@@ -264,6 +264,46 @@ def airm_geodesic_min_distance(
             best_t = float(t)
     return float(best_d), best_t
 
+
+def spd_tangent_vector(reference: np.ndarray, X: np.ndarray) -> np.ndarray:
+    """Vectorize the AIRM tangent vector of `X` at `reference` into a
+    Euclidean coordinate whose L2 norm equals the AIRM Riemannian norm
+    of the tangent.
+
+    Steps (the standard pyRiemann tangent-space map):
+    1. `S = log(reference^{-1/2} X reference^{-1/2})`, symmetric.
+    2. Vectorize the upper triangle of `S`, weighting off-diagonal
+       entries by `sqrt(2)` so that `||vec||_2 == ||S||_F`.
+
+    The result is a `D = n(n+1)/2` vector for `n x n` SPD input. A set
+    of such vectors, taken at the group Frechet mean, is the correct
+    Euclidean embedding for feeding SPD trajectories to a Gaussian
+    model without discretizing them.
+    """
+    R_inv_sqrt = spd_invsqrtm(reference)
+    S = spd_logm(_sym(R_inv_sqrt @ X @ R_inv_sqrt))
+    n = S.shape[0]
+    iu = np.triu_indices(n)
+    vec = S[iu].astype(float)
+    # sqrt(2) weight on off-diagonal entries (they appear twice in ||.||_F)
+    weights = np.where(iu[0] == iu[1], 1.0, np.sqrt(2.0))
+    return vec * weights
+
+
+def spd_tangent_embedding(
+    matrices: list[np.ndarray], reference: np.ndarray | None = None
+) -> tuple[np.ndarray, np.ndarray]:
+    """Embed a list of SPD matrices into the tangent space at their
+    AIRM Frechet mean (or at a supplied `reference`).
+
+    Returns `(vectors, reference)` where `vectors` is `(N, n(n+1)/2)`.
+    Norm-preserving per `spd_tangent_vector`.
+    """
+    if reference is None:
+        reference = airm_frechet_mean(list(matrices))
+    vecs = np.array([spd_tangent_vector(reference, M) for M in matrices])
+    return vecs, reference
+
 # --------------------------------------------------------------------
 # Grassmann primitives
 # --------------------------------------------------------------------
