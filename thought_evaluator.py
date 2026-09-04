@@ -58,9 +58,9 @@ def evaluate_thought_text(text: str, *, consent: bool) -> ThoughtEvaluation:
     if not cleaned:
         raise ValueError("Thought text cannot be empty.")
 
-    words = {token.strip(".,!?;:\"'()[]{}").lower() for token in cleaned.split()}
-    positive_matches = len(words & POSITIVE_WORDS)
-    negative_matches = len(words & NEGATIVE_WORDS)
+    words = [token.strip(".,!?;:\"'()[]{}").lower() for token in cleaned.split()]
+    positive_matches = sum(1 for word in words if word in POSITIVE_WORDS)
+    negative_matches = sum(1 for word in words if word in NEGATIVE_WORDS)
     score = positive_matches - negative_matches
 
     if score > 0:

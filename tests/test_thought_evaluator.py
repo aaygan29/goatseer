@@ -18,6 +18,13 @@ class ThoughtEvaluatorTests(unittest.TestCase):
         self.assertEqual(result.sentiment, "positive")
         self.assertGreater(result.score, 0)
 
+    def test_counts_repeated_words(self):
+        result = evaluate_thought_text("happy happy sad", consent=True)
+
+        self.assertEqual(result.matched_positive_words, 2)
+        self.assertEqual(result.matched_negative_words, 1)
+        self.assertEqual(result.score, 1)
+
     def test_negative_sentiment(self):
         result = evaluate_thought_text("I am upset and anxious", consent=True)
 
