@@ -75,3 +75,30 @@ This is "stimulus in visual field -> occipital -> association -> motor
   behavior classes to their networks from Neurosynth.
 - Predicted-EEG forward model (lead field) and predicted-fMRI forward
   model (HRF) projecting region activation to sensors.
+
+## Threat-response circuit (ADR-014)
+
+`threat_response.py` corrects the four flaws of the cortex-only v1 by
+building the scary-stimulus cascade the way a research scientist would.
+
+- Augmented atlas: Schaefer-100 cortex + Harvard-Oxford subcortex
+  (amygdala, thalamus, brainstem, hippocampus, striatum). Build it with
+  `build_augmented_connectome.py`.
+- Directed LeDoux dual-route priors (fast Vis->Thalamus->Amygdala, slow
+  Vis->ventral->Amygdala, then amygdala outputs). Imaging FC is
+  symmetric and cannot provide direction.
+- Exogenous effectors (autonomic, endocrine, peripheral motor) that
+  receive from the brain but are NOT imaged, represented explicitly.
+
+Result: a visual threat terminates 0.527 in behavioral motor output,
+0.245 autonomic, 0.228 endocrine, ALL of which are un-imaged effectors.
+Expected processing depth before output is 37 steps through imaged
+regions. The fast subcortical route speeds amygdala arrival (MFPT 15.08
+vs 15.73, ablation PASS). A limitation probe shows the excitatory-only
+random walk cannot represent inhibitory PFC regulation (documented, next
+step is signed dynamics).
+
+This directly answers "how do you set up the response when imaging
+cannot capture it all": enumerate the full system, draw the
+observability boundary explicitly (115 imaged regions vs 3 un-imaged
+effectors), and quantify where the response goes across it.

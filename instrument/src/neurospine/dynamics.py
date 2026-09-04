@@ -500,3 +500,66 @@ def chapman_kolmogorov_test(
             np.isfinite(worst) and worst < 0.1
         ),
     }
+
+
+def absorption_probabilities(
+    T: np.ndarray, absorbing: list[int]
+) -> np.ndarray:
+    """Absorption probabilities of an absorbing Markov chain.
+
+    For a chain with absorbing states `absorbing` (each an absorbing
+    self-loop, `T[a, a] = 1`), returns a matrix `B` of shape
+    `(n_transient, n_absorbing)` where `B[s, e]` is the probability of
+    being absorbed in absorbing state `e` starting from transient state
+    `s`. Rows sum to 1 (every path is eventually absorbed, assuming the
+    absorbing set is reachable from every transient state).
+
+    Standard construction: with the chain reordered as `[[Q, R], [0, I]]`,
+    `B = (I - Q)^{-1} R`. The returned array is indexed by the ORIGINAL
+    transient-state order (a list `transient` is returned alongside so
+    the caller can map rows back).
+    """
+    _check_row_stochastic(T)
+    n = T.shape[0]
+    absorbing = list(absorbing)
+    aset = set(absorbing)
+    for a in absorbing:
+        if not np.isclose(T[a, a], 1.0):
+            raise ValueError(
+                f"state {a} is not absorbing (T[{a},{a}] = {T[a, a]:.3f})"
+            )
+    transient = [i for i in range(n) if i not in aset]
+    if not transient:
+        raise ValueError("no transient states")
+    Q = T[np.ix_(transient, transient)]
+    R = T[np.ix_(transient, absorbing)]
+    N = np.linalg.inv(np.eye(len(transient)) - Q)
+    B = N @ R
+    full = np.zeros((n, len(absorbing)))
+    for r, s in enumerate(transient):
+        full[s] = B[r]
+    for c, a in enumerate(absorbing):
+        full[a, c] = 1.0
+    return full
+
+
+def expected_steps_to_absorption(
+    T: np.ndarray, absorbing: list[int]
+) -> np.ndarray:
+    """Expected number of steps before absorption, per starting state.
+
+    `t = (I - Q)^{-1} 1` for the transient block; absorbing states are 0.
+    This is the expected processing depth before the chain reaches an
+    absorbing (e.g. effector) node.
+    """
+    _check_row_stochastic(T)
+    n = T.shape[0]
+    aset = set(absorbing)
+    transient = [i for i in range(n) if i not in aset]
+    Q = T[np.ix_(transient, transient)]
+    N = np.linalg.inv(np.eye(len(transient)) - Q)
+    t = N @ np.ones(len(transient))
+    full = np.zeros(n)
+    for r, s in enumerate(transient):
+        full[s] = t[r]
+    return full
