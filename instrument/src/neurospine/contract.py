@@ -65,6 +65,10 @@ FIELD_GATES: dict[str, list[str]] = {
     "unmeasured_domains": ["G12"],
     # Subject specificity flag: external validity (RAVEN-style shift).
     "is_subject_specific": ["G8"],
+    # Latent state: manifold correctness (G14) plus measurement reliability.
+    "latent_state": ["G9", "G14"],
+    # Intervention: manifold correctness (G14) plus purpose gate (G15).
+    "intervention": ["G14", "G15"],
 }
 
 
@@ -110,6 +114,11 @@ class Thought:
     abstention_flag: bool = False
     unmeasured_domains: list[str] = field(default_factory=list)
     is_subject_specific: bool = False
+    # Riemannian-topological cartography (ADR-008).
+    # `latent_state` is a `neurospine.manifold.LatentState` when the
+    # harness ran its manifold estimator, else None. Typed as Any to
+    # avoid a hard import in the contract module.
+    latent_state: Any | None = None
 
     def __post_init__(self) -> None:
         for name, value in self.confidence.items():

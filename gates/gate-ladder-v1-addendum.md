@@ -98,7 +98,42 @@ sample is under-powered rather than truly null. This addendum:
   when the direction and effect size are consistent; the project is
   flagged for additional data instead.
 
+## G14 Manifold correctness (proposed, ADR-008)
+
+Any claim about a Riemannian distance, geodesic, log/exp map,
+parallel transport, or Frechet mean must survive an identity check
+whose tolerance is documented in the corresponding test file. The
+AIRM identities in `neurospine/manifold.py` are covered by
+`instrument/tests/verification/test_manifold.py`; the topology
+primitives in `neurospine/topology.py` are covered by
+`test_topology.py` against synthetic point clouds with known Betti
+numbers.
+
+- G14 passes when every AIRM identity test passes: symmetry of
+  distance, affine invariance, geodesic endpoints, log-exp duality,
+  parallel-transport-preserves-inner-product, Frechet-gradient
+  vanishing at the mean, exact recovery on known Betti numbers.
+- G14 marked `n/a` for projects that do not use manifold or
+  topological methods.
+- G14 is a hard prerequisite for `latent_state` and `intervention`
+  fields on the `Thought` tuple.
+
+## G15 Purpose gate (proposed, ADR-008)
+
+Any intervention scored by NEUROSPINE must declare a purpose from
+the ADR-managed `PURPOSE_REGISTRY`. Attempting to score an
+intervention on an unregistered purpose raises
+`PurposeNotRegisteredError` at construction time.
+
+- G15 passes when the intervention's purpose is in the registry AND
+  the ADR that added the purpose is cited in the evaluation.
+- G15 is a hard prerequisite for the `intervention` field on the
+  `Thought` tuple.
+- New purposes are added by ADR only. See ADR-009 (queued) for the
+  formal purpose-registry ADR.
+
 ## Effective date
 
-2026-09-03. Applied prospectively to future scoring passes. The
-2026-09-03 pass is the first application.
+2026-09-03 (G2, G-fMRI.2 sharpening, warden naming, G13 scope,
+retirement rule sharpening, fMRI addendum sharpening).
+2026-09-04 (G14, G15 added per ADR-008).

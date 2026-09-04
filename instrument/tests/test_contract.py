@@ -25,6 +25,9 @@ class TestFieldGates:
             "abstention_flag",
             "unmeasured_domains",
             "is_subject_specific",
+            # ADR-008 Riemannian-topological additions:
+            "latent_state",
+            "intervention",
         }
         assert set(FIELD_GATES.keys()) == expected
 

@@ -10,7 +10,10 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "AGPL-3.0-only" }
 authors = [{ name = "Aayush Gandhi", email = "aayush@datumnd.com" }]
-dependencies = []
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=7", "pytest-cov", "ruff", "mypy"]
