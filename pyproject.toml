@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neurospine"
+version = "0.0.0"
+description = "Unified Neuro-AI auditing instrument. See README.md."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "AGPL-3.0-only" }
+authors = [{ name = "Aayush Gandhi", email = "aayush@datumnd.com" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov", "ruff", "mypy"]
+
+[tool.setuptools.packages.find]
+where = ["instrument/src"]
+include = ["neurospine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["instrument/tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "gated: test that will only pass once the referenced gate passes",
+    "synthetic: uses synthetic ground truth, safe to run without real data",
+    "real: uses real data, must be preceded by a passing synthetic counterpart",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

@@ -1,17 +1,19 @@
-# hippocampal-backward-shifted-reward-nature-09958
+---
+slug: hippocampal-backward-shifted-reward-nature-09958
+authors: Yaghoubi, Kumar, Nieto-Posadas, Mosser
+venue: Nature
+year: 2026
+identifier: DOI 10.1038/s41586-025-09958-0
+projects: [behavioral-decoding, memoryprint, nacc-anticipation]
+gates: [G8, G-fMRI.1, G-fMRI.2]
+verdict: sharpens
+---
 
-- slug: hippocampal-backward-shifted-reward-nature-09958
-- authors: TBD
-- venue: Nature
-- year: 2025
-- identifier: DOI 10.1038/s41586-025-09958-0
-- projects: [behavioral-decoding, memoryprint, nacc-anticipation]
-- gates: [G8, G-fMRI.1, G-fMRI.2]
-- verdict: sharpens
+# Predictive Coding of Reward in the Hippocampus
 
-## Mechanism
+## Mechanism (from abstract)
 
-TBD (unindexed; WebFetch failed 2026-09-03: Nature authentication redirect; paywall-gated).
+The hippocampus drives a backward-shifted reorganization of neural activity to anticipate reward, enabling predictive encoding of reward locations through temporally shifted activity patterns. The work emphasizes the dynamic nature of hippocampal representations, showing how the system flexibly restructures its neural codes ahead of upcoming reinforcement. This predictive reorganization mechanism underlies how the hippocampus supports prospective decision-making and temporal credit assignment across multiple timescales.
 
 ## Preliminary relevance mapping
 

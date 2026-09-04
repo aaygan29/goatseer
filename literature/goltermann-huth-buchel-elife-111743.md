@@ -1,17 +1,19 @@
-# goltermann-huth-buchel-elife-111743
+---
+slug: goltermann-huth-buchel-elife-111743
+authors: Goltermann, Huth, Buchel
+venue: eLife
+year: 2025
+identifier: eLife 111743
+projects: [tribe-neuroprint, anesthesia-bridge, cortex-of-anyone]
+gates: [G7, G8, G9, G-fMRI.1, G-fMRI.3]
+verdict: sharpens
+---
 
-- slug: goltermann-huth-buchel-elife-111743
-- authors: Goltermann, Huth, Buchel
-- venue: eLife
-- year: TBD
-- identifier: eLife 111743
-- projects: [tribe-neuroprint, anesthesia-bridge, cortex-of-anyone]
-- gates: [G7, G8, G9, G-fMRI.1, G-fMRI.3]
-- verdict: sharpens
+# Opposing BOLD Signals and Oxygen Metabolism Largely Arise From Statistical Uncertainty in Metabolic Estimates
 
-## Mechanism
+## Mechanism (from abstract)
 
-TBD (unindexed; WebFetch failed 2026-09-03: HTTP 404 Not Found; article link may be incorrect or removed).
+This reanalysis challenges recent claims of widespread discordance between BOLD fMRI signals and cerebral metabolic rate of oxygen (CMRO2) changes. When accounting for statistical variability in metabolic estimates, 77.2% of voxels could not be robustly classified as concordant or discordant, suggesting observed sign disagreement largely reflects statistical uncertainty in CMRO2 rather than physiological sign reversal. CMRO2 measurements showed substantially higher variability across participants (127.8% higher within task-responsive regions) compared to BOLD. Where sufficient statistical evidence exists, positive BOLD responses prove predominantly aligned with metabolic changes, underscoring the importance of rigorous statistical evaluation in quantitative neuroimaging.
 
 ## Preliminary relevance mapping
 

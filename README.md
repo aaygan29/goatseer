@@ -1,66 +1,117 @@
-# NEUROSPINE (working name: NEW_REPO)
+# NEUROSPINE (repo slug: NEW_REPO)
 
-Unified Neuro-AI program repository. Owner: Aayush Gandhi (aaygan29).
+Individual and group scale thought / behavior prediction from neural
+recordings and behavioral signals. Owner: Aayush Gandhi (aaygan29).
 
-This repository consolidates the strongest surviving pieces of the Neuro-AI
-portfolio into one instrument, tracks every project against a versioned gate
-ladder, and maintains a living literature index that continuously re-scores
-what should be built, sharpened, or retired.
+NEUROSPINE is a new research study synthesized from three inputs:
+
+1. Aayush's prior Neuro-AI portfolio (13 active + 5 proposed projects),
+   contributing engineering only (never authority) per ADR-002.
+2. A seed literature set (MEIcoder, RAVEN, DreamerV3 sparse memory,
+   hippocampal backward-shifted reward, Goltermann/Huth/Buchel BOLD-CMRO2
+   reanalysis, Cognitive Dark Matter).
+3. An expanded literature scan across brain mechanics, network topology,
+   physics of neural systems, computational neuroscience, and data
+   analytics for neural time series (~34 additional external anchors
+   as of 2026-09-04; biomedical side pending pubmed retry).
+
+## What NEUROSPINE studies
+
+Given a subject's neural recordings and behavioral signals, predict:
+
+- What they are perceiving (`perceived_stimulus`).
+- What they are feeling (`predicted_affect`: valence, arousal, discrete).
+- What they are deciding (`predicted_decision`: choice + DDM parameters).
+- What they are remembering (`predicted_memory_state`: recall probability,
+  temporal shift).
+- What they anticipate rewarding (`predicted_reward_signal`).
+
+Each with calibrated `confidence`, an `abstention_flag`, a declared
+`unmeasured_domains` list from the Cognitive Dark Matter taxonomy, and
+an `is_subject_specific` flag telling whether the harness used a
+per-subject decoder or a group fallback.
+
+At two scales, honestly:
+
+- **Individual scale** (Aim 1), replicably: same subject same task
+  same prediction within a documented tolerance across sessions.
+- **Group scale** (Aim 2), with the transfer cost quantified, not
+  hidden.
+
+And with the Cognitive Dark Matter frontier declared, not smuggled
+(Aim 3).
 
 ## Layout
 
-- `portfolio/` one folder per in-scope project, each with an `evaluation.md`
-  scored against the current gate ladder in `gates/`.
-- `literature/` one structured note per paper, plus `references.bib`.
-- `gates/` the versioned gate ladder used to accept or retire work.
-- `instrument/` the NEUROSPINE instrument itself: spec, source, tests.
-- `experiments/` runnable, reproducible experiments. Every real-data claim is
-  preceded by a synthetic ground-truth control.
-- `reports/weekly/` Monday auto-report of portfolio deltas and new literature.
-- `decisions/` ADRs for every scope change or project retirement.
-- `issues_to_open.md` queue of GitHub actions that need auth or human review
-  before they can fire.
+- `study/` research study protocol, aims, methods, analysis plan,
+  preregistration, ethics, timeline, data sources, literature map.
+- `instrument/` reference analysis code (`neurospine` package) + tests.
+- `portfolio/` per-project evaluation dossier scored against the gate
+  ladder.
+- `literature/` per-paper structured notes + `references.bib` +
+  synthesis docs.
+- `gates/` versioned gate ladder.
+- `experiments/` runnable experiments, one Makefile target each.
+- `reports/weekly/` Monday scorecard.
+- `reports/first-scoring-pass-2026-09-03.md` first cross-cutting
+  portfolio scoring report (4 green, 11 yellow, 3 red).
+- `decisions/` ADRs (000 through 006 as of 2026-09-03).
+- `issues_to_open.md` queued GitHub actions and human-in-the-loop
+  items.
 
-## Contract of the instrument
-
-Given `(model, subject, task)`, NEUROSPINE returns a per-decision tuple:
+## Running the instrument
 
 ```
-{
-  answer,                    # the model's decision
-  calibrated_confidence,     # conformal, subject-conditional
-  abstention_flag,           # honesty gate; refuse when unsupported
-  loyalty_vector,            # per-source alignment (jspace-loyalty)
-  sparse_circuit_id,         # DreamerV3-style handle on the mechanism
-  neural_alignment_score,    # per-subject encoder pass/fail
-  honesty_verdict            # WARDEN-style H1/H2/H3
-}
+make install-dev
+make test           # full suite
+make test-synthetic # synthetic-first tests only
+make lint
 ```
 
-Every field must have a passing gate before it ships. See
-`instrument/specs/contract-v0.md`.
-
-## Cadence
-
-Each tick runs one of, in priority order: (1) index a new paper, (2) refresh a
-stale `evaluation.md`, (3) implement a small unambiguous change on a portfolio
-repo, (4) close an instrument spec gap test-first, (5) crawl new literature.
-Weekly report every Monday under `reports/weekly/`.
+`Neurospine.predict(subject, recordings, context)` is the public entry
+point. Every field in the returned `Thought` is gated per
+`FIELD_GATES` in `instrument/src/neurospine/contract.py`. Reference
+providers fail every gate by construction, so a stubbed harness
+cannot ship a prediction as a claim.
 
 ## Hard rules
 
 - No em dashes in any writing produced by or for this repo.
 - Never push or force-push to `main`; branch and PR only.
 - README updates ship in the same commit as the code they document.
-- Any fMRI-grounded claim must pass the Goltermann/Huth robustness triad
-  before it enters a paper draft or a portfolio README as a claim, not a
-  hypothesis.
-- Aayush's own prior work is exploratory unless it lives under
-  `Neuro-AI/submissions/` or `MLCB_2026_submission/`.
-- For double-blind submissions, ship the `anonymous.4open.science` mirror.
+- Any fMRI-grounded prediction must pass the Goltermann/Huth
+  robustness triad before it enters a paper draft or a portfolio
+  README as a claim, not a hypothesis.
+- For any double-blind submission, ship the `anonymous.4open.science`
+  mirror.
 
-## Status
+## Citation doctrine (ADR-002)
 
-Scaffold only. See `reports/weekly/2026-09-07.md` for the first placeholder
-report. Instrument code is unwritten; portfolio evaluations are stubs pending
-their first real scoring pass.
+Every load-bearing design choice, method, gate, or metric in
+NEUROSPINE is anchored to already-published external work. The
+literature index under `literature/` is the citation source of first
+resort.
+
+Aayush's prior projects are treated as engineering provenance, not
+authority. Code lifted from a prior project is named in git history
+and in the source project's `portfolio/<slug>/evaluation.md`, but
+never cited as the reason a method is correct. Before an extracted
+method can raise any gate in NEUROSPINE, it must pass a fresh
+external check per ADR-003.
+
+This rules out the circular-error risk where an undetected bug in a
+prior project silently props up a NEUROSPINE claim.
+
+## Status (2026-09-04)
+
+- Phase 0 (instrument freeze): in progress. `Thought` contract frozen;
+  reference harness passes 30 synthetic-first tests.
+- First portfolio scoring pass complete: 4 green, 11 yellow, 3 red.
+- 34 external literature anchors indexed; biomedical side pending
+  pubmed retry after rate-limit reset.
+- ADRs 000 through 006 accepted (scaffold, license, citation doctrine,
+  extraction protocol, pivot from auditor to study, two retirements).
+- Next: complete pubmed synthesis, then advance the highest-leverage
+  gate gaps flagged by the first scoring pass
+  (`G-fMRI.2` sign-concordance binomial for `anesthesia-bridge` and
+  `decision-phenotype`).

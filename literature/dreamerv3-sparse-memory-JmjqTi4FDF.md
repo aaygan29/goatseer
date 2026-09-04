@@ -1,17 +1,19 @@
-# dreamerv3-sparse-memory-JmjqTi4FDF
+---
+slug: dreamerv3-sparse-memory-JmjqTi4FDF
+authors: Sobotka, Ijspeert, Bellegarda
+venue: Interpretability Workshop
+year: 2025
+identifier: OpenReview JmjqTi4FDF
+projects: [ism-v1, memoryprint, wiring-not-weights]
+gates: [G5, G6, G7]
+verdict: sharpens
+---
 
-- slug: dreamerv3-sparse-memory-JmjqTi4FDF
-- authors: TBD
-- venue: OpenReview
-- year: TBD
-- identifier: OpenReview JmjqTi4FDF
-- projects: [ism-v1, memoryprint, wiring-not-weights]
-- gates: [G5, G6, G7]
-- verdict: sharpens
+# Reverse-Engineering Memory in DreamerV3: From Sparse Representations to Functional Circuits
 
-## Mechanism
+## Mechanism (from abstract)
 
-TBD (unindexed; WebFetch failed 2026-09-03: OpenReview verification screen returned instead of content).
+DreamerV3 relies on sparse memory representations and small internal subnetworks (circuits) to store and act on memory. The paper applies mechanistic interpretability analysis to reverse-engineer the functional components that enable DreamerV3's memory operations. This work bridges the gap between learned representations and identifiable circuit-level mechanisms, demonstrating that complex decision-making behavior emerges from structured but minimal computational motifs.
 
 ## Preliminary relevance mapping
 

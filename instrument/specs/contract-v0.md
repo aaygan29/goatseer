@@ -1,23 +1,75 @@
-# NEUROSPINE Per-Decision Contract (v0)
+# NEUROSPINE Per-Prediction Contract (v0)
 
-A NEUROSPINE decision outputs a seven-field tuple. This specification is frozen
-for v0 and subject to change via ADR revision.
+The NEUROSPINE harness returns a `Thought` tuple: a structured
+prediction of a subject's cognitive state at one moment, from neural
+recordings and behavioral signals.
 
-## Field specifications
+Version 0 is frozen for the Phase 0 scaffold (see `study/TIMELINE.md`).
+Changes are recorded as ADRs. The previous v0 auditor-tuple was
+retired per ADR-004.
 
-| Field | Type | Definition | Gates | Failure mode |
-|-------|------|-----------|-------|--------------|
-| answer | str | The LLM's chosen output or decision label | G1, G3, G12 | Without G1: provenance unknown (answer may be cached/leaked); without G3: specification is ambiguous (answer bounds undefined); without G12: answer integrity compromised (may contradict stated calibration) |
-| calibrated_confidence | float in [0, 1] | Posterior probability the answer is correct on the same task distribution | G2, G7, G12 | Without G2: no seed variance (confidence may not generalize); without G7: not calibrated (overconfident or deferential, ECE > 0.05); without G12: confidence divorced from empirical support (not backed by real probability) |
-| abstention_flag | bool | True if the model declined to answer (refusal or uncertainty threshold breach) | G1, H1 | Without G1: abstention traced to wrong cause (cache hit, system prompt); without H1: refusal may be adversarial or inconsistent (loyalty-driven masking) |
-| loyalty_vector | dict of float | Model operating characteristics per portfolio project (e.g., {"jspace_loyalty": 0.42, "cultist": -0.15}) | G4, H3 | Without G4: specificity not ablated (loyalty may conflate unrelated decision axes); without H3: vector not disclosed (model may hide systematic bias) |
-| sparse_circuit_id | str | Minimal causal circuit in the model that produces the answer | G5, G6 | Without G5: confounds not controlled (circuit may be spurious); without G6: necessity not established (circuit may be sufficient but not required) |
-| neural_alignment_score | float in [0, 1] | Congruence between the model's decision and a neural ground truth (fMRI or simulator) | G8, G-fMRI.1, G-fMRI.2 | Without G8: alignment not externally valid (may reflect training distribution rather than real cognition); without G-fMRI.1: per-participant variance unmeasured (alignment may be noisier than reported); without G-fMRI.2: sign concordance not tested (alignment may be null at group level) |
-| honesty_verdict | str (one of: "truthful", "partially_truthful", "deceptive") | Assessment of whether the tuple itself is accurate about the model's state | G9, G10, H2 | Without G9: measurement unreliable (tuple may misreport calibration, sparse circuit); without G10: reproducibility not verified (verdict may not hold on new seed or model); without H2: confidence in the verdict not calibrated (user cannot trust the honesty claim itself) |
+## Fields
 
-## Preamble
+| Field | Type | Definition | Gates | Failure mode if emitted without its gate |
+| --- | --- | --- | --- | --- |
+| subject | str | Subject identifier the prediction is about | (no gate; identity metadata) | Provenance loss |
+| perceived_stimulus | Any \| None | What the subject saw / heard / attended to | G1, G6, G-fMRI.1, G-fMRI.2, G-fMRI.3 | Unverified provenance, unfalsifiable mechanism, or fMRI reliability triad failure would let a stimulus artifact masquerade as decoding |
+| predicted_affect | dict[str, float] \| None | Valence, arousal, discrete emotion probabilities | G7, G9 | Uncalibrated affect or unreliable test-retest would let noise pass as affect prediction |
+| predicted_decision | dict[str, Any] \| None | Choice and drift-diffusion parameters | G7, G8 | Uncalibrated or single-dataset only would leave the DDM prediction not externally valid |
+| predicted_memory_state | dict[str, float] \| None | Recall probability and temporal-shift-of-encoding | G6, G-fMRI.1, G-fMRI.2, G-fMRI.3 | Mechanism unproven or reliability triad failure would let a memory-adjacent artifact pass |
+| predicted_reward_signal | float \| None | Anticipation strength / valuation magnitude | G6, G-fMRI.1, G-fMRI.2, G-fMRI.3 | Same failure mode as memory: mechanism or reliability |
+| confidence | dict[str, float in 0..1] | Per-dimension calibrated confidence | G7 | Uncalibrated confidence is worse than no confidence; the field must ship with G7 or not at all |
+| abstention_flag | bool | True if the harness abstained on every attempted prediction this call | G7, G9, G-fMRI.1, G-fMRI.2, G-fMRI.3 | Wrong abstention rule silently ships bad predictions or hides good ones |
+| unmeasured_domains | list[str] | Cognitive Dark Matter domains explicitly not attempted | G12 | Without analytic integrity, unmeasured domains become hidden claims |
+| is_subject_specific | bool | True iff a subject-specific decoder was used vs group model fallback | G8 | Without external validity, subject-specific claim overstates transfer |
 
-Version 0 is a first draft. Each field will undergo refinement based on the
-results of the first evaluation pass against gates/gate-ladder-v0.md. Fields
-marked "not yet implemented" may be dropped, merged, or split. All changes will
-be recorded as ADRs (decisions/) with rationale and consequences.
+## Invariants enforced at construction
+
+- `confidence[dim]` is in `[0.0, 1.0]` for every reported dimension.
+  Values outside range raise `ValueError`.
+- `unmeasured_domains` contains only labels from
+  `COGNITIVE_DARK_MATTER_DOMAINS`. Foreign labels raise `ValueError`.
+- If `abstention_flag=True`, no prediction field may be populated.
+  Populated prediction with abstention raises `ValueError`.
+
+## Cognitive Dark Matter taxonomy
+
+Fixed tuple (Mineault, Griffiths, Escola, arXiv:2603.03414):
+
+- `metacognition`
+- `cognitive_flexibility`
+- `lifelong_learning`
+- `reasoning`
+- `social_reasoning`
+- `emotional_intelligence`
+
+The harness populates `unmeasured_domains` with all six by default.
+Adding a domain to the "measured" side requires an ADR revising Aim 3.
+
+## Harness contract
+
+`Neurospine.predict(subject: str, recordings: dict, context: dict) -> Thought`
+
+Given a subject id, a `recordings` dict (fMRI, EEG, behavioral,
+physiological data), and a `context` dict (task, stimulus history,
+timing), assemble and return a `Thought`. The harness:
+
+1. Consults the caller-provided `ProviderGates` to short-circuit any
+   provider whose gates have not fully passed.
+2. Calls each active provider in a fixed order.
+3. Consults the abstention provider per dimension; a positive returns
+   sets the whole `Thought` to abstain and clears every prediction.
+4. Populates `confidence` for every dimension where a real prediction
+   was emitted AND the calibration gate has passed.
+5. Always populates `unmeasured_domains` with the full Cognitive Dark
+   Matter taxonomy.
+
+## v0 -> v1 revision triggers
+
+- Any Cognitive Dark Matter domain is moved to the measured side
+  (would require rewriting Aim 3).
+- The abstention rule changes (would require an ADR after Phase 2
+  first-experience data).
+- Multi-timepoint prediction is added (currently one prediction per
+  call; a session-level prediction would extend to a `ThoughtStream`
+  type).
