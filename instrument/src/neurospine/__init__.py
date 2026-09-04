@@ -72,6 +72,12 @@ from .manifold import (
     spd_tangent_embedding,
     spd_tangent_vector,
 )
+from .propagation import (
+    ActivationChain,
+    AtlasPropagation,
+    activation_chain,
+    connectome_to_markov,
+)
 from .topology import (
     PersistencePair,
     betti_curve,
@@ -117,6 +123,11 @@ __all__ = [
     "spd_sqrtm",
     "spd_tangent_embedding",
     "spd_tangent_vector",
+    # Anatomical propagation (ADR-013)
+    "ActivationChain",
+    "AtlasPropagation",
+    "activation_chain",
+    "connectome_to_markov",
     # Topology primitives (ADR-008)
     "PersistencePair",
     "betti_curve",
