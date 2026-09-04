@@ -11,7 +11,7 @@ directory names change or projects are retired.
 | `ORGANIZATION.md` | This file. Path map. |
 | `MEMORY_LINKS.md` | Cross-references to Aayush's auto-memory entries. |
 | `issues_to_open.md` | Queued GitHub actions blocked on auth or human review. |
-| `LICENSE` | Unlicense (see `decisions/ADR-001`). |
+| `LICENSE` | AGPL-3.0 (see `decisions/ADR-001-license.md`). |
 | `gates/` | Versioned gate ladder. Current: `gate-ladder-v0.md`. |
 | `instrument/` | NEUROSPINE source, tests, and spec. |
 | `experiments/` | Runnable experiments, one Makefile target each. |

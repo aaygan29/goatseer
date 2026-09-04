@@ -22,8 +22,7 @@ that access.
 - [ ] Confirm final program name (currently working title NEUROSPINE, repo
       slug NEW_REPO). If renaming the repo, use `gh repo rename` and update
       the git remote.
-- [ ] Decide license: keep Unlicense (public domain, current) or switch to
-      MIT per the original brief. See `decisions/ADR-001`.
+- [x] License decided: AGPL-3.0 (2026-09-03). See `decisions/ADR-001-license.md`.
 - [ ] Authorize `plugin:engineering:github` in an interactive session if the
       MCP-mediated flow is preferred over `gh` CLI.
 - [ ] Grant access to the private repos this program will PR against:
