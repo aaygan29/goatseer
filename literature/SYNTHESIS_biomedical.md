@@ -46,20 +46,44 @@ size, and mind-reading proper) is queued in `issues_to_open.md`.
 | RewardDecoder (validated across tasks) | Brain Reward Signature | pubmed-36878456 |
 | CalibrationProvider (hierarchical trial-level) | Freund et al. hierarchical + multivariate | pubmed-39957839 |
 
-## Gaps still open
+## Tick 4 additions (2026-09-04, round-2 pubmed)
 
-The pubmed crawl this tick covered 4 of the 12 planned topic axes.
-Still to run in the next tick:
+Five more biomedical anchors covering the highest-leverage previously-
+open topics.
 
-- Working memory decoding (multivariate pattern analysis).
-- BCI / intent decoding for thought / speech.
-- Sample size and reproducibility in neuroimaging (Marek 2022 style).
-- Cross-subject generalization of neural decoders (beyond RAVEN).
-- Semantic / language decoding from fMRI (Huth-style).
-- Memory recall decoding and hippocampal reactivation (biomedical
-  side; the Nature backward-shift paper is the physics side).
-- Test-retest of EEG-based decoders.
-- Multimodal fusion of neural + behavioral signals.
+| Slug | Anchor | Contribution |
+| --- | --- | --- |
+| pubmed-37127759 | Tang, LeBel, Jain, Huth 2023 Nature Neuroscience | Non-invasive continuous-language semantic decoder that transfers across perceived, imagined, and silent-video inputs. Reference PerceptionDecoder for a language-head option. Mental-privacy result: subject cooperation required to train + apply. |
+| pubmed-36944488 | Deutsch et al. 2023 J. Neuroscience | Working memory contents in auditory cortex are NOT distractor-resistant. G4 specificity template for MemoryDecoder: distraction-vs-no-distraction contrast. |
+| pubmed-35296861 | Marek et al. 2022 Nature | Reproducible BWAS require thousands of subjects. Draws the boundary: within-subject decoding is fine at small N; across-subject association is not. Caps A2 to within-subject-plus-fine-tuning rather than BWAS. |
+| pubmed-41979953 | Cao et al. 2026 IEEE TNSRE | Hybrid covert-attention-augmented motor imagery + transformer EEG fusion. Intra-subject 89%, inter-subject 81%: concrete reference for A2 transfer-cost expectations on BCI-style paradigms. |
+| pubmed-42149756 | Sung et al. 2026 IEEE TNSRE (EffortNet) | Self-supervised + incremental + transfer three-part learning stack for per-subject EEG decoders with reduced calibration data. Engineering blueprint for SubjectAdapter's low-data path. |
+
+## Table 3 update: NEUROSPINE component to biomedical external anchor
+
+Additions from tick 4:
+
+| Component | Anchor | Slug |
+| --- | --- | --- |
+| PerceptionDecoder (language head option) | Tang et al. 2023 | pubmed-37127759 |
+| MemoryDecoder (G4 specificity via distraction) | Deutsch et al. 2023 | pubmed-36944488 |
+| SubjectAdapter (low-data per-subject blueprint) | Sung et al. 2026 EffortNet | pubmed-42149756 |
+| SubjectAdapter (BCI-style transfer cost reference) | Cao et al. 2026 CAA-MI | pubmed-41979953 |
+| Study-wide sample-size discipline | Marek et al. 2022 | pubmed-35296861 |
+
+## Gaps still open (after tick 4)
+
+- Multimodal EEG-fMRI fusion for decoding cognition (pubmed search
+  returned zero hits with the exact query; needs a broader search
+  term next tick).
+- Memory recall decoding + hippocampal reactivation on the
+  biomedical side (Yaghoubi Nature paper covers the temporal-shift
+  physics side already).
+- Cross-subject generalization beyond RAVEN + BCI-style (nothing
+  strong from fMRI side yet).
+- Semantic language decoding beyond Tang et al. 2023 (may not need
+  more).
+- Naturalistic movie / video decoding at scale.
 
 ## Attribution
 

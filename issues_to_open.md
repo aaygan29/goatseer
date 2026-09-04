@@ -4,14 +4,14 @@ Everything here becomes a live issue, a PR, or an ADR retiring it.
 
 ## Immediate (do next tick)
 
-- [x] Retry the pubmed literature crawl (partial done 2026-09-04:
-      6 notes for test-retest, reward, affect, dynamic decoding, DDM).
-      Full crawl still open: working memory decoding, BCI / intent
-      decoding, sample-size reproducibility (Marek 2022 style),
-      cross-subject generalization beyond RAVEN, semantic / language
-      decoding (Huth-style), memory recall + hippocampal reactivation,
-      EEG test-retest, multimodal fusion. Queue as
-      `pubmed-round-2` for the next tick.
+- [x] Pubmed literature crawl in three rounds (2026-09-04):
+      round 1 (test-retest, reward, affect, dynamic decoding, DDM,
+      analog wave cognition + math anchors: 10 notes) and round 2
+      (semantic language decoding, working memory + distraction,
+      sample-size reproducibility, BCI paradigm, EEG deep-learning
+      stack: 5 notes). Round-3 still open: multimodal EEG-fMRI
+      fusion (broader query needed), naturalistic movie decoding at
+      scale, cross-subject generalization beyond RAVEN.
 - [x] Enabled Issues and Projects on `aaygan29/NEW_REPO`
       (2026-09-04).
 - [x] Labels created 2026-09-04: `lit-review`, `gate-fail`,
