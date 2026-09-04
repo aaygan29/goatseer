@@ -1,6 +1,6 @@
 # Synthesis: mathematical + computational-neuroscience anchors
 
-The math side of NEUROSPINE now rests on four load-bearing pillars.
+The math side of NEUROSPINE now rests on five load-bearing pillars.
 Each pillar has its external anchor(s), maps to concrete `neurospine`
 package modules, and is verified by ADR-003-style identity tests.
 
@@ -81,8 +81,8 @@ and still have bottleneck-close persistence diagrams.
 
 External anchors:
 
-- **`pubmed-33626312` Friston, Da Costa, Hafner, Hesp, Parr 2021**
- : sophisticated active inference; expected free energy as a
+- **`pubmed-33626312` Friston, Da Costa, Hafner, Hesp, Parr 2021**:
+  sophisticated active inference; expected free energy as a
   formal-mathematical objective for scoring counterfactual actions.
 - **`pubmed-42618509` Miller, Brincat, Roy 2026**: wave-mediated
   top-down control as the mesoscale substrate for the intervention
@@ -102,6 +102,50 @@ subregion.
 Deferred: replacing AIRM cosine alignment with expected-free-energy
 scoring (ADR-009, planned). The current implementation is a
 first-order approximation; EFE is the correct large-step objective.
+
+## Pillar 5: Markov transition dynamics on the manifold (ADR-009)
+
+External anchors:
+
+- Deuflhard + Weber, "Robust Perron cluster analysis in conformation
+  dynamics" (Linear Algebra Appl., 2005) for PCCA.
+- Prinz, Wu, Sarich et al., "Markov models of molecular kinetics:
+  generation and validation" (J. Chem. Phys., 2011) for the MSM
+  discipline (lag-time selection, implied timescales,
+  Chapman-Kolmogorov validation).
+- Coifman + Lafon 2006 for the diffusion-map alternative to
+  prototype-based discretization.
+- `pubmed-31320220` Sohn et al. 2019 for the cortical low-dim curved
+  manifold that justifies discretizing at all.
+- `pubmed-42618509` Miller, Brincat, Roy 2026: wave-mediated routing
+  is what physically modulates the transition entries `T_ij`.
+
+NEUROSPINE binding: `dynamics.py` implements transition-matrix
+estimation, stationary distribution (left-Perron eigenvector),
+Kolmogorov-Sinai entropy rate, spectral gap (second-largest
+eigenvalue modulus), mean first passage time, committor functions,
+and PCCA-style metastable clustering. `test_dynamics.py` verifies
+each against analytically-known values: two-state stationary
+distribution `(b, a)/(a+b)`, MFPT `1/a`, uniform-chain entropy rate
+`log n`, identity-chain zero spectral gap, committor boundary
+conditions.
+
+The probability-transition-matrix heuristic is the answer to "where
+does a thought travel": the stationary distribution says where it
+dwells, MFPT says how long to get somewhere, the committor says
+which basin it commits to, PCCA says what the basins are, and the
+entropy rate says how much of the trajectory is predictable at all.
+
+**First real-data result (2026-09-04).** PhysioNet EEG-BCI
+(eegmmidb) runs 4 + 6, 5 sensorimotor channels, 8-30 Hz, 2-second
+epochs, 6 AIRM prototypes. A 200-permutation shuffle null on the
+entropy rate separates subjects sharply: subject 1 shows no temporal
+structure (z = -0.62, p = 0.25), subjects 2 and 3 show very strong
+structure (z about -11, p = 0.005). Whether that split is a real
+individual difference or an artifact of epoch length / state count
+is the open question; the standard MSM validation (implied
+timescales, Chapman-Kolmogorov) is NOT yet run and is the next
+experiment. See `experiments/spd_transition_eegbci/`.
 
 ## Cross-cutting: information geometry, optimal transport, Bayesian brain
 

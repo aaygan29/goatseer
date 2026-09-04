@@ -78,6 +78,73 @@ explicitly per the analytic-integrity gate (G12).
 - Attention proxy sweep: covariate-adjust for vigilance; check that
   decoders do not collapse to attention prediction.
 
+## Trajectory-dynamics analyses (ADR-009)
+
+### Primary: does the trajectory carry temporal structure?
+
+- Unit of analysis: subject-session.
+- Test: 200-permutation shuffle null on the Kolmogorov-Sinai entropy
+  rate of the discretized state sequence. One-sided (below), because
+  lower entropy rate means more structure.
+- Statistic: empirical p-value plus a z-score against the null
+  distribution.
+- Multiple comparisons across subjects: Benjamini-Hochberg FDR 0.05.
+- Sign concordance across subjects: two-sided binomial on the count
+  of subjects whose observed entropy rate falls below the null mean.
+  This is the EEG analogue of the G-fMRI.2 sign-concordance leg.
+
+### Required Markov-assumption validation (currently NOT run)
+
+No trajectory result is reportable as a scientific claim until all
+four pass:
+
+1. Implied-timescale plateau across a lag-time sweep.
+2. Chapman-Kolmogorov agreement between `T(k * lag)` and `T(lag)^k`.
+3. State-count stability: the structure verdict does not flip across
+   a sweep of prototype counts.
+4. Epoch-length stability: same, across epoch durations.
+
+Failing any of these downgrades the trajectory result to a
+descriptive pipeline demonstration, which is how the 2026-09-04
+EEG-BCI run is currently classified.
+
+### Discretization confound (council review, 2026-09-04)
+
+Any Markov-structure test on a discretized continuous trajectory MUST
+be run against a construction-matched Markov null, not against a fixed
+threshold. A function of a Markov process is generically not Markov, so
+the implied-timescale plateau and the k>=3 Chapman-Kolmogorov test are
+non-diagnostic on their own: a process that is first-order Markov by
+construction fails them identically under this pipeline.
+
+The only admissible non-Markov test is: k=2 Chapman-Kolmogorov TV,
+seed-averaged over at least 5 discretizations, compared to the null
+distribution from an AIRM-autoregression of matched length and
+dimension (`markov_confound_control.py`). A subject is called
+non-first-order-Markov only when its seed-averaged k=2 CK TV exceeds
+the 95th percentile of that null.
+
+### Reporting gate on trajectory outputs
+
+Because the first real-data run showed temporal structure WITHOUT
+first-order Markov validity, the trajectory outputs are split into
+two tiers:
+
+**Tier 1, reportable as descriptive statistics of the observed
+sequence** (no Markov assumption required): stationary distribution
+of observed occupancy, entropy rate, spectral gap, effective
+dimension, and the shuffle-null verdict.
+
+**Tier 2, reportable ONLY when implied-timescale plateau AND
+Chapman-Kolmogorov both pass for that subject**: mean first passage
+time, committor functions, and any statement phrased as a property
+of an underlying Markov process rather than of the observed
+sequence.
+
+A subject failing validation contributes to Tier 1 results and is
+explicitly excluded from Tier 2 results, with the exclusion count
+reported.
+
 ## Handling of missing data
 
 - Trials with more than 20 percent motion or artifact rejection are

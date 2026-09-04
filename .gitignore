@@ -20,3 +20,8 @@ node_modules/
 * 2.py
 * 2.md
 * 2.ipynb
+
+# Experiment outputs (regenerate with `make reproduce`)
+experiments/**/results/
+mne_data/
+experiments/hmm_eeg/results/

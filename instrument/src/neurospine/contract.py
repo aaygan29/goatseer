@@ -69,6 +69,9 @@ FIELD_GATES: dict[str, list[str]] = {
     "latent_state": ["G9", "G14"],
     # Intervention: manifold correctness (G14) plus purpose gate (G15).
     "intervention": ["G14", "G15"],
+    # Trajectory summary: calibration + reliability + manifold correctness.
+    # See ADR-009.
+    "trajectory_summary": ["G7", "G9", "G14"],
 }
 
 
@@ -119,6 +122,12 @@ class Thought:
     # harness ran its manifold estimator, else None. Typed as Any to
     # avoid a hard import in the contract module.
     latent_state: Any | None = None
+    # Thought-trajectory transition-kernel summary (ADR-009).
+    # `trajectory_summary` is a dict of scalar invariants describing
+    # the subject's Markov process on the state manifold this session:
+    # {stationary_entropy, entropy_rate, spectral_gap, effective_dimension,
+    # optionally mfpt_to_current_state and metastable_basin_id}.
+    trajectory_summary: dict[str, float] | None = None
 
     def __post_init__(self) -> None:
         for name, value in self.confidence.items():

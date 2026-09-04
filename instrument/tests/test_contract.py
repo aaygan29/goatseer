@@ -28,6 +28,8 @@ class TestFieldGates:
             # ADR-008 Riemannian-topological additions:
             "latent_state",
             "intervention",
+            # ADR-009 thought-trajectory transition kernel:
+            "trajectory_summary",
         }
         assert set(FIELD_GATES.keys()) == expected
 

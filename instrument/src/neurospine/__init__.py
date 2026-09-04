@@ -30,7 +30,19 @@ from .contract import (
     Thought,
     field_is_ready,
 )
+from .dynamics import (
+    TrajectorySummary,
+    committor,
+    entropy_rate,
+    estimate_transition_matrix,
+    mean_first_passage_time,
+    perron_cluster_analysis,
+    spectral_gap,
+    stationary_distribution,
+    summarize_trajectory,
+)
 from .harness import Neurospine, ProviderGates
+from .hmm import GaussianHMM
 from .intervention import (
     ChannelScore,
     Intervention,
@@ -40,6 +52,7 @@ from .intervention import (
     score_intervention_channels,
 )
 from .manifold import (
+    airm_geodesic_min_distance,
     Family,
     LatentState,
     airm_distance,
@@ -49,12 +62,21 @@ from .manifold import (
     airm_inner,
     airm_log_map,
     airm_parallel_transport,
+    grassmann_chordal_distance,
     grassmann_distance,
     grassmann_principal_angles,
     spd_expm,
     spd_invsqrtm,
     spd_logm,
     spd_sqrtm,
+    spd_tangent_embedding,
+    spd_tangent_vector,
+)
+from .propagation import (
+    ActivationChain,
+    AtlasPropagation,
+    activation_chain,
+    connectome_to_markov,
 )
 from .topology import (
     PersistencePair,
@@ -73,6 +95,7 @@ __all__ = [
     "Thought",
     "field_is_ready",
     # Harness + providers
+    "GaussianHMM",
     "GoltermannHuthAbstention",
     "Neurospine",
     "ProviderGates",
@@ -87,15 +110,24 @@ __all__ = [
     "airm_exp_map",
     "airm_frechet_mean",
     "airm_geodesic",
+    "airm_geodesic_min_distance",
     "airm_inner",
     "airm_log_map",
     "airm_parallel_transport",
+    "grassmann_chordal_distance",
     "grassmann_distance",
     "grassmann_principal_angles",
     "spd_expm",
     "spd_invsqrtm",
     "spd_logm",
     "spd_sqrtm",
+    "spd_tangent_embedding",
+    "spd_tangent_vector",
+    # Anatomical propagation (ADR-013)
+    "ActivationChain",
+    "AtlasPropagation",
+    "activation_chain",
+    "connectome_to_markov",
     # Topology primitives (ADR-008)
     "PersistencePair",
     "betti_curve",
@@ -110,4 +142,14 @@ __all__ = [
     "PURPOSE_REGISTRY",
     "PurposeNotRegisteredError",
     "score_intervention_channels",
+    # Thought-trajectory dynamics (ADR-009)
+    "TrajectorySummary",
+    "committor",
+    "entropy_rate",
+    "estimate_transition_matrix",
+    "mean_first_passage_time",
+    "perron_cluster_analysis",
+    "spectral_gap",
+    "stationary_distribution",
+    "summarize_trajectory",
 ]
