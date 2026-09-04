@@ -84,6 +84,49 @@ reveals that a reported prediction is confounded by a Cognitive Dark
 Matter domain, that prediction is either recharacterized (renamed to
 what the ablation shows it actually measures) or retracted.
 
+## Aim 4 (A4): Purpose-constrained intervention scoring
+
+**Hypothesis.** For a subject at cognitive state `P` and a declared
+target state `Q` on the same Riemannian manifold (SPD-family or
+learned-latent family), the AIRM cosine alignment of a candidate
+intervention channel's pushforward with the geodesic tangent from `P`
+to `Q` predicts the empirical effectiveness of that channel, above a
+preregistered baseline (random ranking, or the tangent-space Euclidean
+alignment).
+
+**Success criterion (preregistered).**
+
+- On a held-out set of (subject, current, target, channel) tuples,
+  the AIRM-cosine-ranked top channel outperforms the baseline
+  ranking in Spearman rank correlation between predicted alignment
+  and measured effect on state `P -> P'` where the intervention was
+  actually applied.
+- Every intervention scored ships with (a) the purpose from the
+  ADR-managed `PURPOSE_REGISTRY`, (b) the geodesic length in AIRM
+  units, and (c) the safety margin to any declared out-of-scope
+  subregion.
+- No intervention scored on any Cognitive Dark Matter domain.
+- The G14 (manifold correctness) and G15 (purpose gate) checks pass
+  before any A4 number is reported.
+
+**Failure criterion (preregistered).** If AIRM-ranked channels do
+not outperform the baseline ranking, A4 fails. Report the failure
+with the exact Spearman correlations and re-open the ADR-009 design
+to consider expected-free-energy scoring or a first-principles
+alternative.
+
+**External anchors.**
+
+- `pubmed-22010143` Barachant et al. 2012 (Riemannian BCI, tangent-
+  space projection convention).
+- `pubmed-33626312` Friston et al. 2021 (sophisticated active
+  inference; expected free energy as the target formal objective).
+- `pubmed-42618509` Miller, Brincat, Roy 2026 (wave-mediated
+  top-down control as the mechanism substrate).
+- `pubmed-31320220` Sohn et al. 2019 (Bayesian computation through
+  a low-dim curved cortical manifold; RNN causal perturbation as
+  the intervention test template).
+
 ## Non-aims
 
 - NEUROSPINE does not aim to be a general-purpose AI auditing tool.
