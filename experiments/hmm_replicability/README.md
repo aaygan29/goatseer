@@ -1,5 +1,20 @@
 # hmm_replicability
 
+> SETTLED BATTLE (guardrail, not a finding). Cross-session subject
+> individuation via neural pattern is a KNOWN, retracted/null battle in
+> this program: BOLD5000 fingerprint overclaim (RETRACTED, synthetic
+> subjects were seeds), "encoding is not identity" (digital-brain,
+> individuation stays open as gap G1), and "encoder as moat is dead".
+> See the neuroai-failure-archaeology skill. This experiment was run
+> before consulting that chronicle; it re-derived the settled result
+> (identity is carried by the MARGINAL covariance, not the dynamics).
+> It is kept ONLY as a reusable specificity-ablation harness and as a
+> guardrail that confirms the settled battle. It is not a NEUROSPINE
+> contribution. Do not extend it (e.g. more subjects to "sharpen" the
+> individuation gap): that gap is open program-wide and is not closed
+> by fingerprinting.
+
+
 A1 replicability test (ADR-012): do a subject's HMM dynamics replicate
 across sessions BEYOND their marginal covariance?
 
