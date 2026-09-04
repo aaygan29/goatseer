@@ -30,6 +30,17 @@ from .contract import (
     Thought,
     field_is_ready,
 )
+from .dynamics import (
+    TrajectorySummary,
+    committor,
+    entropy_rate,
+    estimate_transition_matrix,
+    mean_first_passage_time,
+    perron_cluster_analysis,
+    spectral_gap,
+    stationary_distribution,
+    summarize_trajectory,
+)
 from .harness import Neurospine, ProviderGates
 from .intervention import (
     ChannelScore,
@@ -110,4 +121,14 @@ __all__ = [
     "PURPOSE_REGISTRY",
     "PurposeNotRegisteredError",
     "score_intervention_channels",
+    # Thought-trajectory dynamics (ADR-009)
+    "TrajectorySummary",
+    "committor",
+    "entropy_rate",
+    "estimate_transition_matrix",
+    "mean_first_passage_time",
+    "perron_cluster_analysis",
+    "spectral_gap",
+    "stationary_distribution",
+    "summarize_trajectory",
 ]
