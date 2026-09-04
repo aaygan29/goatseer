@@ -1,0 +1,22 @@
+.DS_Store
+._*
+*.pyc
+__pycache__/
+.venv/
+venv/
+env/
+.env
+.env.local
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+*.log
+# iCloud dedup hazard (see reference_icloud_desktop_git_hazards.md)
+* 2.py
+* 2.md
+* 2.ipynb
