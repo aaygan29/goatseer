@@ -189,3 +189,135 @@ class TestSummarizeTrajectory:
         for k in ("stationary_entropy", "entropy_rate", "spectral_gap", "effective_dimension"):
             assert k in d
             assert isinstance(d[k], float)
+
+
+class TestMarkovValidation:
+    """Verification for the ADR-009 required Markov-assumption checks.
+
+    A genuinely Markov chain must show a plateau in implied timescales
+    and must pass Chapman-Kolmogorov. A deliberately non-Markov
+    sequence must fail at least one. These tests use sequences whose
+    Markov-ness is known by construction.
+    """
+
+    @staticmethod
+    def _sample_markov(T: np.ndarray, n: int, seed: int = 0) -> np.ndarray:
+        rng = np.random.default_rng(seed)
+        k = T.shape[0]
+        out = np.empty(n, dtype=int)
+        out[0] = 0
+        for t in range(1, n):
+            out[t] = rng.choice(k, p=T[out[t - 1]])
+        return out
+
+    def test_lagged_estimator_matches_lag_one(self) -> None:
+        from neurospine.dynamics import estimate_transition_matrix_at_lag
+
+        seq = np.array([0, 1, 2, 0, 1, 2, 0, 1, 2, 0])
+        T1a = estimate_transition_matrix(seq, num_states=3)
+        T1b = estimate_transition_matrix_at_lag(seq, num_states=3, lag=1)
+        assert np.allclose(T1a, T1b)
+
+    def test_lagged_estimator_row_stochastic(self) -> None:
+        from neurospine.dynamics import estimate_transition_matrix_at_lag
+
+        rng = np.random.default_rng(0)
+        seq = rng.integers(0, 4, size=300)
+        for lag in (1, 2, 5, 10):
+            T = estimate_transition_matrix_at_lag(seq, 4, lag)
+            assert np.allclose(T.sum(axis=1), 1.0)
+
+    def test_lag_too_long_raises(self) -> None:
+        from neurospine.dynamics import estimate_transition_matrix_at_lag
+
+        seq = np.array([0, 1, 0])
+        with pytest.raises(ValueError):
+            estimate_transition_matrix_at_lag(seq, 2, lag=5)
+
+    def test_true_markov_chain_plateaus(self) -> None:
+        """A sequence sampled from an actual Markov chain must show a
+        plateau in implied timescales."""
+        from neurospine.dynamics import implied_timescales
+
+        T = np.array([
+            [0.90, 0.08, 0.02],
+            [0.05, 0.90, 0.05],
+            [0.02, 0.08, 0.90],
+        ])
+        seq = self._sample_markov(T, 20000, seed=1)
+        res = implied_timescales(seq, 3, lags=[1, 2, 3, 5, 8, 12], n_timescales=2)
+        assert res["plateau_detected"], (
+            f"expected plateau for a true Markov chain; "
+            f"slowest CV = {res['slowest_timescale_cv']}"
+        )
+
+    def test_true_markov_chain_passes_chapman_kolmogorov(self) -> None:
+        from neurospine.dynamics import chapman_kolmogorov_test
+
+        T = np.array([
+            [0.90, 0.08, 0.02],
+            [0.05, 0.90, 0.05],
+            [0.02, 0.08, 0.90],
+        ])
+        seq = self._sample_markov(T, 20000, seed=2)
+        res = chapman_kolmogorov_test(seq, 3, lag=1, k_values=[2, 3])
+        assert res["passes_conventional_threshold"], (
+            f"true Markov chain failed CK; worst TV = {res['worst_max_row_tv']}"
+        )
+
+    def test_deterministic_period_3_fails_chapman_kolmogorov_at_lag_1(self) -> None:
+        """A deterministic 3-cycle is Markov, so CK should PASS. This
+        guards against a CK implementation that flags everything."""
+        from neurospine.dynamics import chapman_kolmogorov_test
+
+        seq = np.array([0, 1, 2] * 2000)
+        res = chapman_kolmogorov_test(seq, 3, lag=1, k_values=[2, 3])
+        assert res["passes_conventional_threshold"]
+
+    def test_second_order_chain_is_detected_as_non_markov(self) -> None:
+        """A second-order (non-Markov at lag 1) sequence should show a
+        worse CK discrepancy than a first-order one on the same
+        alphabet. This is the discriminative test."""
+        from neurospine.dynamics import chapman_kolmogorov_test
+
+        rng = np.random.default_rng(3)
+        n = 20000
+        seq = np.zeros(n, dtype=int)
+        seq[1] = 1
+        # Next state depends on the PREVIOUS TWO states, not just one.
+        for t in range(2, n):
+            if seq[t - 1] == seq[t - 2]:
+                seq[t] = (seq[t - 1] + 1) % 3
+            else:
+                seq[t] = seq[t - 2]
+        non_markov = chapman_kolmogorov_test(seq, 3, lag=1, k_values=[2, 3])
+
+        T = np.array([
+            [0.90, 0.08, 0.02],
+            [0.05, 0.90, 0.05],
+            [0.02, 0.08, 0.90],
+        ])
+        markov_seq = self._sample_markov(T, n, seed=4)
+        markov = chapman_kolmogorov_test(markov_seq, 3, lag=1, k_values=[2, 3])
+
+        assert non_markov["worst_max_row_tv"] > markov["worst_max_row_tv"], (
+            f"second-order sequence TV {non_markov['worst_max_row_tv']:.4f} "
+            f"should exceed first-order TV {markov['worst_max_row_tv']:.4f}"
+        )
+
+    def test_implied_timescales_shape_and_keys(self) -> None:
+        from neurospine.dynamics import implied_timescales
+
+        rng = np.random.default_rng(5)
+        seq = rng.integers(0, 4, size=2000)
+        res = implied_timescales(seq, 4, lags=[1, 2, 4], n_timescales=2)
+        assert res["lags"] == [1, 2, 4]
+        assert len(res["timescales"]) == 3
+        assert len(res["timescales"][0]) == 2
+        assert "plateau_detected" in res
+
+    def test_empty_lags_raises(self) -> None:
+        from neurospine.dynamics import implied_timescales
+
+        with pytest.raises(ValueError):
+            implied_timescales(np.array([0, 1, 0, 1]), 2, lags=[])

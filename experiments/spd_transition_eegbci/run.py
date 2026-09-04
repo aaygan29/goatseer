@@ -44,7 +44,11 @@ import numpy as np
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "instrument" / "src"))
 
-from neurospine.dynamics import summarize_trajectory  # noqa: E402
+from neurospine.dynamics import (  # noqa: E402
+    chapman_kolmogorov_test,
+    implied_timescales,
+    summarize_trajectory,
+)
 from neurospine.manifold import (  # noqa: E402
     airm_distance,
     airm_frechet_mean,
@@ -280,6 +284,24 @@ def run(subject: int, num_prototypes: int, out_dir: Path) -> dict:
     print("[eegbci] estimating transition matrix and summary")
     summary = summarize_trajectory(labels, num_states=num_prototypes, k_metastable=2)
 
+    print("[eegbci] validating the Markov assumption")
+    n_obs = len(labels)
+    max_lag = max(2, n_obs // 12)
+    lag_grid = sorted(set([1, 2, 3, 4, 6, 8, max_lag]))
+    lag_grid = [L for L in lag_grid if L < n_obs // 3]
+    its = implied_timescales(
+        labels, num_prototypes, lags=lag_grid, n_timescales=2
+    )
+    ck = chapman_kolmogorov_test(
+        labels, num_prototypes, lag=1, k_values=[2, 3]
+    )
+    markov_ok = bool(its["plateau_detected"] and ck["passes_conventional_threshold"])
+    print(f"[eegbci] implied-timescale plateau: {its['plateau_detected']} "
+          f"(slowest CV {its['slowest_timescale_cv']:.4f})")
+    print(f"[eegbci] Chapman-Kolmogorov: {ck['passes_conventional_threshold']} "
+          f"(worst row TV {ck['worst_max_row_tv']:.4f})")
+    print(f"[eegbci] MARKOV ASSUMPTION VALIDATED: {markov_ok}")
+
     print("[eegbci] running shuffle null control (200 permutations)")
     null_control = shuffle_null_control(labels, num_prototypes, n_shuffles=200)
     print(f"[eegbci] null control verdict: {null_control['verdict']}")
@@ -307,6 +329,11 @@ def run(subject: int, num_prototypes: int, out_dir: Path) -> dict:
         "stationarity_check": stationarity_ok,
         "shuffle_null_control": null_control,
         "quality_control": qc,
+        "markov_validation": {
+            "implied_timescales": its,
+            "chapman_kolmogorov": ck,
+            "markov_assumption_validated": markov_ok,
+        },
     }
 
     out_path = out_dir / f"summary_subject-{subject:03d}.json"

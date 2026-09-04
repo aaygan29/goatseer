@@ -44,6 +44,26 @@ def main() -> None:
     gap = np.array([r["spectral_gap"] for r in rows])
     eff = np.array([r["effective_dimension"] for r in rows])
     z = np.array([r["shuffle_null_control"]["z_score"] for r in rows])
+    has_mv = all("markov_validation" in r for r in rows)
+    if has_mv:
+        plateau = np.array([
+            bool(r["markov_validation"]["implied_timescales"]["plateau_detected"])
+            for r in rows
+        ])
+        ck_pass = np.array([
+            bool(r["markov_validation"]["chapman_kolmogorov"]["passes_conventional_threshold"])
+            for r in rows
+        ])
+        ck_tv = np.array([
+            float(r["markov_validation"]["chapman_kolmogorov"]["worst_max_row_tv"])
+            for r in rows
+        ])
+        mv_ok = np.array([
+            bool(r["markov_validation"]["markov_assumption_validated"]) for r in rows
+        ])
+    qc_pass = np.array([
+        bool(r.get("quality_control", {}).get("qc_pass", True)) for r in rows
+    ])
     p = np.array([r["shuffle_null_control"]["p_value_one_sided_below"] for r in rows])
     max_h = rows[0]["shuffle_null_control"]["max_possible_entropy_rate"]
 
@@ -90,13 +110,48 @@ def main() -> None:
           f"(more structure than shuffled), two-sided binomial p = {binom_p:.3e}")
     print()
 
+    if has_mv:
+        print("MARKOV-ASSUMPTION VALIDATION (ADR-009 required checks)")
+        print(f"  implied-timescale plateau:  {int(plateau.sum())}/{n} subjects")
+        print(f"  Chapman-Kolmogorov pass:    {int(ck_pass.sum())}/{n} subjects")
+        print(f"  BOTH (Markov validated):    {int(mv_ok.sum())}/{n} subjects")
+        print(f"  CK worst row TV: mean {ck_tv.mean():.4f}  "
+              f"range [{ck_tv.min():.4f}, {ck_tv.max():.4f}]  (threshold 0.10)")
+        print()
+        n_struct_but_not_markov = int((structured & ~mv_ok).sum())
+        print(f"  subjects with STRUCTURE but FAILING Markov validation: "
+              f"{n_struct_but_not_markov}/{n}")
+        print("  -> for these, the transition matrix is a descriptor of real")
+        print("     temporal structure, NOT a validated generative model.")
+        print()
+    print(f"quality control passed: {int(qc_pass.sum())}/{n} subjects")
+    print()
+
+    # Statistical power note: transitions available vs free parameters.
+    n_ep = int(np.median([r["n_epochs"] for r in rows]))
+    k = rows[0]["num_prototypes"]
+    free_params = k * (k - 1)
+    print(f"POWER: median {n_ep - 1} observed transitions to estimate "
+          f"{free_params} free parameters ({(n_ep - 1) / free_params:.1f} per parameter).")
+    if (n_ep - 1) / free_params < 10:
+        print("  WARNING: fewer than 10 transitions per free parameter. The")
+        print("  transition matrix is severely underpowered at this state count.")
+    print()
+
     print("per-subject detail:")
-    print(f"{'subj':>5} {'h_rate':>8} {'gap':>7} {'eff_dim':>8} {'z':>9} "
-          f"{'p':>8} {'q(BH)':>8}  verdict")
+    hdr = (f"{'subj':>5} {'h_rate':>8} {'gap':>7} {'eff_dim':>8} {'z':>9} "
+           f"{'q(BH)':>8}  {'struct':>7}")
+    if has_mv:
+        hdr += f" {'plateau':>8} {'ck_tv':>7} {'markov':>7}"
+    print(hdr)
     for i, r in enumerate(rows):
-        print(f"{r['subject']:>5} {h[i]:>8.4f} {gap[i]:>7.4f} {eff[i]:>8.4f} "
-              f"{z[i]:>9.3f} {p[i]:>8.4f} {q_full[i]:>8.4f}  "
-              f"{'STRUCTURE' if q_full[i] < args.alpha else 'none'}")
+        line = (f"{r['subject']:>5} {h[i]:>8.4f} {gap[i]:>7.4f} {eff[i]:>8.4f} "
+                f"{z[i]:>9.3f} {q_full[i]:>8.4f}  "
+                f"{('STRUCT' if q_full[i] < args.alpha else 'none'):>7}")
+        if has_mv:
+            line += (f" {str(bool(plateau[i])):>8} {ck_tv[i]:>7.3f} "
+                     f"{str(bool(mv_ok[i])):>7}")
+        print(line)
 
 
 if __name__ == "__main__":

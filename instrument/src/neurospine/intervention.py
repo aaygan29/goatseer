@@ -102,9 +102,17 @@ class Intervention:
     - `channels_by_efficacy`: channels sorted descending by AIRM cosine
       alignment with the geodesic tangent.
     - `geodesic_length`: AIRM distance between the two states.
-    - `safety_margin`: AIRM distance from the geodesic midpoint to
-      the subject's out-of-scope subregion, expressed as a scalar (
-      `float("inf")` when no out-of-scope subregion is declared).
+    - `safety_margin`: the MINIMUM AIRM distance from any point on the
+      geodesic `current -> target` to the declared out-of-scope
+      subregion (`float("inf")` when none is declared). This is a
+      minimum over the whole path, not a distance at one interior
+      point: a clearance measured only at the midpoint reports a
+      healthy margin even when the forbidden state is the target
+      itself or sits exactly on the trajectory.
+    - `closest_approach_t`: the geodesic parameter in `[0, 1]` where
+      that minimum is attained, so the caller can see WHERE the
+      trajectory comes closest to the forbidden region. `None` when
+      no out-of-scope subregion is declared.
     """
 
     purpose: str
@@ -113,6 +121,7 @@ class Intervention:
     channels_by_efficacy: tuple[ChannelScore, ...]
     geodesic_length: float
     safety_margin: float
+    closest_approach_t: float | None = None
 
     def __post_init__(self) -> None:
         if self.purpose not in PURPOSE_REGISTRY:
@@ -145,6 +154,7 @@ def score_intervention_channels(
     channels: list[InterventionChannel],
     purpose: str,
     out_of_scope_region: LatentState | None = None,
+    geodesic_samples: int = 201,
 ) -> Intervention:
     """Score `channels` by their AIRM cosine alignment with the
     geodesic tangent from `current_state` to `target_state`.
@@ -193,16 +203,26 @@ def score_intervention_channels(
 
     if out_of_scope_region is None:
         margin = float("inf")
+        closest_t = None
     else:
         if out_of_scope_region.family != "spd":
             raise NotImplementedError(
                 "out_of_scope_region SPD-only for now."
             )
-        # Distance from midpoint of the geodesic to the out-of-scope point.
-        from .manifold import airm_geodesic  # local import avoids cycle
+        # MINIMUM distance over the whole geodesic, not the midpoint.
+        # The intervention moves the subject along every point of
+        # gamma(t), so a clearance evaluated at one interior point
+        # certifies nothing about the rest of the path. Evaluating at
+        # t = 0.5 alone reports a comfortable margin even when the
+        # forbidden state IS the target (t = 1) or lies exactly on the
+        # path. See the regression tests in
+        # tests/verification/test_intervention.py.
+        from .manifold import airm_geodesic_min_distance  # avoids cycle
 
-        midpoint = airm_geodesic(P, Q, 0.5)
-        margin = float(airm_distance(midpoint, out_of_scope_region.matrix))
+        margin, closest_t = airm_geodesic_min_distance(
+            P, Q, out_of_scope_region.matrix, n_samples=geodesic_samples
+        )
+        margin = float(margin)
 
     return Intervention(
         purpose=purpose,
@@ -211,4 +231,5 @@ def score_intervention_channels(
         channels_by_efficacy=tuple(scored),
         geodesic_length=float(geo_length),
         safety_margin=margin,
+        closest_approach_t=closest_t,
     )
