@@ -27,9 +27,11 @@ of the components. `literature/` holds the external anchors.
 - Contract: **frozen at v0** (Thought tuple, superseded the earlier
   Decision tuple per ADR-004).
 - Harness: **wired end-to-end**, 30 tests pass.
-- Providers: reference stubs in `reference.py`; first real provider
-  landed as `GoltermannHuthAbstention` in `abstention.py`, with
-  `evaluate_triad` and `sign_concordance_binomial_p` helpers.
+- Providers: reference stubs in `reference.py`; two real providers
+  landed. `GoltermannHuthAbstention` in `abstention.py` (with
+  `evaluate_triad` and `sign_concordance_binomial_p` helpers) and
+  `SplitConformalCalibration` in `calibration.py`, anchored on Vovk
+  et al. 2005 and Angelopoulos and Bates 2021.
 - Extraction protocol: see ADR-003.
 
 ## Order of assembly (planned)
@@ -42,9 +44,10 @@ of the components. `literature/` holds the external anchors.
    the paper's 77.2 percent unrobust-voxel headline remains a
    larger-N extraction; scaffolded here with qualitative
    reproduction tests.
-4. First real `CalibrationProvider`: conformal wrapper on a held-out
-   split. External anchor Vovk et al. 2005; Angelopoulos and Bates
-   2021.
+4. First real `CalibrationProvider`: `SplitConformalCalibration`.
+   Landed 2026-09-04. Standard conformal p-value with `(count + 1) /
+   (N + 1)` continuity correction. Feeds `AbstentionProvider` via
+   its `prediction_interval_width` method.
 5. First real `PerceptionDecoder`: subject-conditional decoder on NSD,
    anchor MEIcoder.
 6. First real `MemoryDecoder` and `RewardDecoder`: temporal-shift
