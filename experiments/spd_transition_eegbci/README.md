@@ -84,3 +84,16 @@ analytically-known values (two-state stationary distribution, MFPT
 `1/a`, uniform-chain entropy rate `log n`, identity-chain zero
 spectral gap). The Makefile enforces the ordering: `real` depends on
 `synthetic`.
+
+
+## Correction (council review, 2026-09-04)
+
+The Markov-structure interpretation was corrected after a council
+review. Run `markov_confound_control.py` before citing any Markov
+result: it builds the AIRM-autoregression null showing that a
+first-order Markov process fails the implied-timescale-plateau and
+k>=3 Chapman-Kolmogorov checks identically. The only admissible
+non-Markov claim is k=2 CK TV (seed-averaged) exceeding that null,
+which held for 3 of 8 tested subjects. The claim "not first-order
+Markov at any resolution" is withdrawn. The temporal-structure claim
+(shuffle null) is unaffected.

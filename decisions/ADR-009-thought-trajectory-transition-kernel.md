@@ -148,6 +148,52 @@ EEG covariance trajectory has memory, and that memory is NOT
 captured by a first-order chain on directly-observed prototype
 states.
 
+
+## CORRECTION (2026-09-04, council review)
+
+The empirical finding above was OVERCLAIMED. A council review hunted
+for the error and found it: the analysis never controlled for the
+discretization confound.
+
+A function of a Markov process is generically NOT Markov (lumpability
+holds only under special conditions). Projecting a continuous SPD
+covariance trajectory onto k prototype states is exactly such a
+function, so the pipeline can manufacture apparent non-Markovianity
+regardless of the underlying dynamics.
+
+The decisive control: an AIRM autoregression (X_{t+1} depends only on
+X_t plus fresh tangent noise) is first-order Markov BY CONSTRUCTION.
+Pushed through the identical discretization + Chapman-Kolmogorov +
+implied-timescale pipeline, it produces the SAME signature the EEG
+showed: no implied-timescale plateau at any k, and CK failing at
+k >= 3. See `experiments/spd_transition_eegbci/markov_confound_control.py`.
+
+Consequences:
+
+- "Implied-timescale plateau 0/40" is NON-DIAGNOSTIC. The detector
+  fires zero plateaus even on genuinely Markov data, because for
+  fast-mixing chains the subdominant eigenvalue is near zero and the
+  implied timescale is noise-dominated below the lag spacing.
+- "CK fails even at 61 obs/param" at k >= 3 is CONFOUNDED. The
+  known-Markov control fails identically at k >= 3.
+- The only non-confounded test is k = 2 against a proper Markov null
+  (25 realizations of the known-first-order process). Against that
+  null (CK TV 95th percentile 0.247), 3 of 8 tested subjects exceed
+  it (seed-averaged over 5 discretizations); the other 5 are
+  indistinguishable from a first-order Markov process.
+
+CORRECTED CLAIM: the discretized EEG state sequence deviates from
+first-order Markov for a MINORITY of subjects (3 of 8), at k = 2 only,
+against a construction-matched Markov null. The earlier claim that the
+process is "genuinely not first-order Markov at any resolution" and
+that this "rules out statistical power" is WITHDRAWN: it was based on
+non-diagnostic (plateau) and confounded (k >= 3 CK) evidence.
+
+Claim A ("temporal structure exists beyond marginal occupancy",
+shuffle null, z up to -35, sign concordance p = 0.021) is UNAFFECTED:
+the permutation null destroys temporal order while preserving marginal
+occupancy exactly, so its rejection is valid.
+
 ### Consequence for the contract
 
 The transition matrix remains a legitimate DESCRIPTOR of the

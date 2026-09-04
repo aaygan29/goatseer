@@ -108,6 +108,22 @@ Failing any of these downgrades the trajectory result to a
 descriptive pipeline demonstration, which is how the 2026-09-04
 EEG-BCI run is currently classified.
 
+### Discretization confound (council review, 2026-09-04)
+
+Any Markov-structure test on a discretized continuous trajectory MUST
+be run against a construction-matched Markov null, not against a fixed
+threshold. A function of a Markov process is generically not Markov, so
+the implied-timescale plateau and the k>=3 Chapman-Kolmogorov test are
+non-diagnostic on their own: a process that is first-order Markov by
+construction fails them identically under this pipeline.
+
+The only admissible non-Markov test is: k=2 Chapman-Kolmogorov TV,
+seed-averaged over at least 5 discretizations, compared to the null
+distribution from an AIRM-autoregression of matched length and
+dimension (`markov_confound_control.py`). A subject is called
+non-first-order-Markov only when its seed-averaged k=2 CK TV exceeds
+the 95th percentile of that null.
+
 ### Reporting gate on trajectory outputs
 
 Because the first real-data run showed temporal structure WITHOUT

@@ -151,9 +151,14 @@ Three things layered on the same mathematics:
 
 ## Next
 
-The single highest-value open item is Markov-assumption validation
-on the trajectory layer: implied-timescale plateau, Chapman-Kolmogorov
-test, and state-count / epoch-length sensitivity sweeps. Until those
-run, the EEG transition-kernel result is a pipeline demonstration
-with a null control, not a claim about individual differences. See
-`study/ANALYSIS_PLAN.md`.
+A council review (2026-09-04) corrected an overclaim: the earlier
+"EEG covariance trajectories are not first-order Markov" was
+confounded by discretization (a function of a Markov process is
+generically not Markov). Against a construction-matched Markov null,
+only 3 of 8 subjects deviate, at k=2 only. The two robust results
+are: (a) temporal structure exists beyond marginal occupancy (shuffle
+null, valid), and (b) a minority of subjects show genuine deviation
+from first-order Markov structure. The natural next model is a hidden
+Markov model, where a latent chain can be Markov even when the
+observed prototype sequence is not. See ADR-009 CORRECTION and
+`experiments/spd_transition_eegbci/markov_confound_control.py`.
