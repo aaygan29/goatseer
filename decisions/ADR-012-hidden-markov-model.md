@@ -111,11 +111,39 @@ Those are the next experiments.
   A1 replicability test (do the same subject's HMM states recur across
   sessions?). That is the next experiment.
 
+## A1 replicability result (2026-09-04, negative for the dynamics claim)
+
+`experiments/hmm_replicability/` ran the cross-session identification
+test on imagined-fist runs 4 (session A) and 8 (session B), with the
+static-Gaussian specificity ablation shipped as the control.
+
+| method | cross-session ID accuracy | binomial p vs chance |
+| --- | --- | --- |
+| static Gaussian (marginal only) | 5/8 = 0.625 | 0.0012 |
+| HMM (dynamics + geometry) | 5/8 = 0.625 | 0.0012 |
+
+Subjects are identifiable cross-session well above the 1/8 chance, but
+the HMM does NO better than the static marginal covariance. The
+cross-session identity is carried by static geometry (anatomy,
+electrode placement), not by dynamics. A1 as "subject dynamics
+replicate as an identifying signal" is NOT supported at this N. The
+specificity ablation removed the effect, which is exactly what it is
+for: it prevented a fingerprinting overclaim of the kind the program
+has retracted before.
+
+This does not contradict the within-session HMM-vs-VAR(1) result: that
+is about modeling structure within a session (real), this is about
+identifying subjects by dynamics across sessions (not beyond the
+marginal). n=8 is coarse; a larger cohort is needed to detect a small
+dynamics-identification gap if one exists.
+
 ## Follow-ups
 
-- Full 8-subject HMM-vs-VAR(1) sweep with the surrogate null.
-- A1 replicability: fit the HMM on session A, score session B, test
-  whether the latent states transfer within subject.
 - BIC state-count selection per subject (currently fixed K=3).
+- Larger cohort for the A1 dynamics-vs-marginal comparison, if the
+  question is worth pursuing given the null at n=8.
+- Whether WITHIN-session HMM state occupancy (not identity) tracks the
+  task condition (left vs right imagery), which is a different and more
+  promising claim than cross-session fingerprinting.
 - Complete the ADR-011 literature sweep (HMM-MAR, microstates,
   transition-path theory).

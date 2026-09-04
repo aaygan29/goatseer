@@ -162,5 +162,10 @@ VAR(1) on held-out EEG beyond the surrogate null (p=0.00 each), while
 on genuinely-first-order surrogate data the HMM correctly does not win.
 The EEG covariance trajectory carries latent-state structure a
 first-order model misses, confound-controlled, in every subject. See
-ADR-012 and `experiments/hmm_eeg/`. Next: session-to-session
-replicability of the HMM states, and BIC state-count selection.
+ADR-012 and `experiments/hmm_eeg/`. The A1 cross-session replicability
+test then returned a disciplined NEGATIVE result: subjects are
+identifiable across sessions (5/8, p=0.0012) but the HMM dynamics do no
+better than the static marginal covariance, so the identity is carried
+by anatomy/electrode geometry, not dynamics. The specificity ablation
+caught a fingerprinting overclaim before it shipped. See
+`experiments/hmm_replicability/`.

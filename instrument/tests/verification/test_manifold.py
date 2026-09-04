@@ -225,3 +225,47 @@ class TestLatentState:
         wide = rng.standard_normal((2, 5))
         with pytest.raises(ValueError):
             LatentState(family="grassmann", matrix=wide, subject="sub-01")
+
+
+class TestTangentEmbedding:
+    """Verification for spd_tangent_vector / spd_tangent_embedding
+    (ADR-012). The tangent embedding must be norm-preserving: the L2
+    norm of the embedded vector equals the AIRM Riemannian distance
+    from the reference to the point."""
+
+    def test_norm_preserving(self) -> None:
+        from neurospine.manifold import airm_distance, spd_tangent_vector
+
+        R = random_spd(5, seed=0)
+        for s in range(1, 6):
+            X = random_spd(5, seed=s)
+            v = spd_tangent_vector(R, X)
+            assert np.linalg.norm(v) == pytest.approx(
+                airm_distance(R, X), abs=1e-8
+            )
+
+    def test_reference_maps_to_zero(self) -> None:
+        from neurospine.manifold import spd_tangent_vector
+
+        R = random_spd(4, seed=7)
+        v = spd_tangent_vector(R, R)
+        assert np.allclose(v, 0.0, atol=1e-8)
+
+    def test_embedding_dimension(self) -> None:
+        from neurospine.manifold import spd_tangent_embedding
+
+        mats = [random_spd(5, seed=s) for s in range(10)]
+        vecs, ref = spd_tangent_embedding(mats)
+        # n(n+1)/2 for n=5 is 15.
+        assert vecs.shape == (10, 15)
+
+    def test_embedding_uses_frechet_mean_by_default(self) -> None:
+        from neurospine.manifold import (
+            airm_frechet_mean,
+            spd_tangent_embedding,
+        )
+
+        mats = [random_spd(3, seed=s) for s in range(6)]
+        _, ref = spd_tangent_embedding(mats)
+        fm = airm_frechet_mean(mats)
+        assert np.allclose(ref, fm, atol=1e-6)

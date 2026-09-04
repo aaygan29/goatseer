@@ -45,6 +45,8 @@ Each experiment specifies:
 | Directory | Data | Status | Gates touched |
 | --- | --- | --- | --- |
 | `spd_transition_eegbci/` | PhysioNet EEG-BCI (eegmmidb), public | **Running on real data since 2026-09-04** | G1 (provenance), G14 (manifold correctness), G10 (reproducibility) |
+| `hmm_eeg/` | PhysioNet EEG-BCI | HMM vs VAR(1), confound-controlled (ADR-012). 8/8 subjects show latent-state structure beyond first-order. | G1, G4 (surrogate control), G14 |
+| `hmm_replicability/` | PhysioNet EEG-BCI runs 4+8 | A1 cross-session identification: does subject dynamics replicate BEYOND the marginal? Static-Gaussian ablation shipped as the specificity control (ADR-012). | G1, G3 (specificity ablation), G7 (external/cross-session) |
 
 `spd_transition_eegbci` is the first real-data run in the repo. It
 implements the ADR-009 thought-trajectory transition kernel: per-epoch
