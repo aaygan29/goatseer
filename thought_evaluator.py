@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from dataclasses import dataclass, asdict
 
 POSITIVE_WORDS = {
@@ -58,7 +59,7 @@ def evaluate_thought_text(text: str, *, consent: bool) -> ThoughtEvaluation:
     if not cleaned:
         raise ValueError("Thought text cannot be empty.")
 
-    words = [token.strip(".,!?;:\"'()[]{}").lower() for token in cleaned.split()]
+    words = re.findall(r"[a-zA-Z]+", cleaned.lower())
     positive_matches = sum(1 for word in words if word in POSITIVE_WORDS)
     negative_matches = sum(1 for word in words if word in NEGATIVE_WORDS)
     score = positive_matches - negative_matches

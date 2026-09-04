@@ -25,6 +25,13 @@ class ThoughtEvaluatorTests(unittest.TestCase):
         self.assertEqual(result.matched_negative_words, 1)
         self.assertEqual(result.sentiment, "neutral")
 
+    def test_splits_internal_punctuation(self):
+        result = evaluate_thought_text("happy/sad good-bad", consent=True)
+
+        self.assertEqual(result.matched_positive_words, 2)
+        self.assertEqual(result.matched_negative_words, 2)
+        self.assertEqual(result.sentiment, "neutral")
+
     def test_counts_repeated_words(self):
         result = evaluate_thought_text("happy happy sad", consent=True)
 
