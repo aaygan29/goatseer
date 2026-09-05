@@ -23,6 +23,12 @@ from .abstention import (
     sign_concordance_binomial_p,
 )
 from .calibration import SplitConformalCalibration
+from .circuit import (
+    DirectedCircuit,
+    DirectedEdge,
+    ExogenousEffector,
+    build_directed_circuit,
+)
 from .contract import (
     COGNITIVE_DARK_MATTER_DOMAINS,
     FIELD_GATES,
@@ -40,6 +46,8 @@ from .dynamics import (
     spectral_gap,
     stationary_distribution,
     summarize_trajectory,
+    absorption_probabilities,
+    expected_steps_to_absorption,
 )
 from .harness import Neurospine, ProviderGates
 from .hmm import GaussianHMM
@@ -123,6 +131,13 @@ __all__ = [
     "spd_sqrtm",
     "spd_tangent_embedding",
     "spd_tangent_vector",
+    # Directed circuits + effectors (ADR-014)
+    "DirectedCircuit",
+    "DirectedEdge",
+    "ExogenousEffector",
+    "build_directed_circuit",
+    "absorption_probabilities",
+    "expected_steps_to_absorption",
     # Anatomical propagation (ADR-013)
     "ActivationChain",
     "AtlasPropagation",
