@@ -147,6 +147,37 @@ is the open question; the standard MSM validation (implied
 timescales, Chapman-Kolmogorov) is NOT yet run and is the next
 experiment. See `experiments/spd_transition_eegbci/`.
 
+## Pillar 6: Signed linear dynamics and network control theory (ADR-015)
+
+External anchors:
+
+- **Gu et al. 2015, "Controllability of structural brain networks"
+  (Nat. Commun.)**: the linear dynamical system `x_{t+1} = A x_t + B u_t`
+  on a brain graph, with the controllability Gramian and minimum control
+  energy. Permits signed weights and is the basis for the control-cost
+  readout.
+- **Galan 2008, "On how network architecture determines the dominant
+  patterns of spontaneous neural activity" (PLoS ONE)**: a linear
+  stochastic rate model of resting-state dynamics on the connectome.
+
+NEUROSPINE binding: `signed_dynamics.py` implements the continuous-time
+leaky analogue `dx/dt = (W - gamma I) x + B u` with SIGNED `W`
+(excitatory positive, inhibitory negative), a stability-guaranteeing
+leak, the closed-form steady state `x_ss = (gamma I - W)^{-1} B u`, the
+controllability Gramian (continuous Lyapunov solve), and minimum control
+energy. `test_signed_dynamics.py` verifies the linear-algebraic
+identities (steady-state fixed point, superposition, stability
+classification, Gramian solves the Lyapunov equation) plus the one
+behavioral property the random walk could not express: an inhibitory
+edge drives its target BELOW baseline.
+
+This is the regime the row-stochastic walk in Pillar 5 could not reach.
+A probability-conserving matrix can only move activation; inhibition is
+subtraction. The signed linear model is the minimal dynamical regime
+that expresses top-down downregulation, and it turns the ADR-014
+ablation-2 limitation into a correct-direction prediction: increasing
+prefrontal regulatory gain lowers amygdala and effector drive.
+
 ## Cross-cutting: information geometry, optimal transport, Bayesian brain
 
 - **`pubmed-36495600` Gerber et al. 2022**: unbalanced optimal

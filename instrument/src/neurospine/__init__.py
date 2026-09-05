@@ -80,6 +80,10 @@ from .manifold import (
     spd_tangent_embedding,
     spd_tangent_vector,
 )
+from .signed_dynamics import (
+    SignedLinearSystem,
+    build_signed_system,
+)
 from .propagation import (
     ActivationChain,
     AtlasPropagation,
@@ -138,6 +142,9 @@ __all__ = [
     "build_directed_circuit",
     "absorption_probabilities",
     "expected_steps_to_absorption",
+    # Signed linear dynamics for inhibitory regulation (ADR-015)
+    "SignedLinearSystem",
+    "build_signed_system",
     # Anatomical propagation (ADR-013)
     "ActivationChain",
     "AtlasPropagation",
