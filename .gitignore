@@ -25,3 +25,6 @@ node_modules/
 experiments/**/results/
 mne_data/
 experiments/hmm_eeg/results/
+
+# Fetched raw data (never committed)
+data/raw/
