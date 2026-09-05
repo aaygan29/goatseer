@@ -180,3 +180,59 @@ class TestReusableEngine:
         subj = [0, 0, 1, 1, 2, 2, 3, 3]
         sp = subject_disjoint_split(seqs, labels, subj, train_frac=0.5, seed=1)
         assert set(sp["train_subjects"]).isdisjoint(sp["test_subjects"])
+
+
+class TestWithinSubjectEngine:
+    """analyze_within_subject: per-subject train/test, aggregated over a
+    cohort, with the same occupancy + null discipline."""
+
+    def _cohort(self, order_matters, n_subj=6, per=16, seed=0):
+        rng = np.random.default_rng(seed)
+        seqs, labels, subj = [], [], []
+        for s in range(n_subj):
+            for _ in range(per):
+                if order_matters:
+                    # sticky vs switching: same occupancy, different transitions
+                    def chain(sticky):
+                        x=[int(rng.random()<0.5)]
+                        for _ in range(23):
+                            stay=rng.random()<(0.85 if sticky else 0.15)
+                            x.append(x[-1] if stay else 1-x[-1])
+                        return np.array(x)
+                    a, b = chain(True), chain(False)
+                else:
+                    a = (rng.random(18) < 0.2).astype(int)
+                    b = (rng.random(18) < 0.8).astype(int)
+                seqs.append(a); labels.append("A"); subj.append(s)
+                seqs.append(b); labels.append("B"); subj.append(s)
+        return seqs, labels, subj
+
+    def test_recovers_within_subject_trajectory_signal(self) -> None:
+        from neurospine.behavior import analyze_within_subject
+        seqs, labels, subj = self._cohort(order_matters=True)
+        r = analyze_within_subject(seqs, labels, subj, n_states=2,
+                                   n_permutations=100, seed=0)
+        assert r["n_subjects"] == 6
+        # Transitions beat occupancy within every subject (the robust
+        # guarantee). Per-subject shuffle-null significance is not asserted:
+        # on tiny near-deterministic test folds the null is uninformative,
+        # which is a property of the data, not the engine.
+        assert r["mean_trajectory_gain"] > 0.1
+        assert r["mean_heldout_accuracy"] > 0.9
+
+    def test_no_false_trajectory_when_only_occupancy(self) -> None:
+        from neurospine.behavior import analyze_within_subject
+        seqs, labels, subj = self._cohort(order_matters=False)
+        r = analyze_within_subject(seqs, labels, subj, n_states=2,
+                                   n_permutations=100, seed=0)
+        assert "TRAJECTOR" not in r["verdict"]
+
+    def test_raises_when_no_usable_subject(self) -> None:
+        from neurospine.behavior import analyze_within_subject
+        import pytest as _pt
+        seqs = [np.array([0, 1]) for _ in range(4)]
+        labels = ["A", "B", "A", "B"]
+        subj = [0, 0, 1, 1]  # only 2 trials/subject < min_trials_per_subject
+        with _pt.raises(ValueError, match="enough trials"):
+            analyze_within_subject(seqs, labels, subj, n_states=2,
+                                   n_permutations=10, min_trials_per_subject=8)

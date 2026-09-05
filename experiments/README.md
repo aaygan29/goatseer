@@ -49,6 +49,7 @@ Each experiment specifies:
 | `thought_propagation/` | Schaefer-100 (+Harvard-Oxford subcortex) + development_fmri | **Anatomical stimulus->behavior chain (ADR-013, 3/3 checks pass) + directed threat circuit with subcortical hubs and exogenous effectors (ADR-014).** | G1, G8, committor/MFPT/PCCA/absorption from dynamics.py |
 | `hmm_replicability/` | PhysioNet EEG-BCI runs 4+8 | A1 cross-session identification: does subject dynamics replicate BEYOND the marginal? Static-Gaussian ablation shipped as the specificity control (ADR-012). | G1, G3 (specificity ablation), G7 (external/cross-session) |
 | `connectome_behavior_prediction/` | PhysioNet EEG-BCI, or **bring your own** (`--input`) | Behavior from discrete state sequences, subject-disjoint split + occupancy ablation. Honest cross-subject NEGATIVE at n=20 (no trajectory signal beyond occupancy or null). Reusable engine `analyze_state_sequences`. | G1, G3 (occupancy ablation), G4 (shuffle null), G7 (subject-disjoint) |
+| `within_subject_decoding/` | PhysioNet EEG-BCI | Within-subject decoding with a Riemannian-MDM positive control. State-trajectory model finds no signal (0.57), but MDM on the raw covariances does (0.62, subjects to 0.92): the discretization discards the signal, the data has it. Engine `analyze_within_subject`. | G1, G3 (occupancy + MDM control), G4 (per-subject null) |
 
 `spd_transition_eegbci` is the first real-data run in the repo. It
 implements the ADR-009 thought-trajectory transition kernel: per-epoch

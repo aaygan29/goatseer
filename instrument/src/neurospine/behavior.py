@@ -354,3 +354,139 @@ def evaluate_behavior_markov_model(
         "confusion": confusion,
         "predictions": preds,
     }
+
+
+# --- Within-subject decoding engine -----------------------------------------
+# The cross-subject engine (analyze_state_sequences) returned an honest null:
+# connectome-state trajectories did not predict motor imagery ACROSS subjects.
+# The natural question is whether the signal is there WITHIN a subject, where
+# the model does not have to generalize across anatomy. This engine trains and
+# tests on the same subject (split across that subject's trials), per subject,
+# then aggregates. It keeps the same discipline: an occupancy ablation and a
+# per-subject label-shuffle null, and a group test over subjects.
+
+def _stratified_trial_split(labels_idx, train_frac, rng):
+    """Split trial indices into train/test, stratified by label, ensuring at
+    least one train and one test trial per class. Returns (train, test) index
+    lists, or None if a class has fewer than 2 trials."""
+    by_class = {}
+    for i, y in labels_idx:
+        by_class.setdefault(y, []).append(i)
+    train, test = [], []
+    for y, idxs in by_class.items():
+        if len(idxs) < 2:
+            return None
+        idxs = list(idxs)
+        rng.shuffle(idxs)
+        n_tr = max(1, min(len(idxs) - 1, int(round(train_frac * len(idxs)))))
+        train.extend(idxs[:n_tr])
+        test.extend(idxs[n_tr:])
+    return train, test
+
+
+def analyze_within_subject(
+    sequences: list,
+    labels: list,
+    subject_ids: list,
+    n_states: int,
+    n_permutations: int = 200,
+    train_frac: float = 0.6,
+    seed: int = 0,
+    min_trials_per_subject: int = 8,
+) -> dict:
+    """Within-subject behavior decoding from discrete state sequences.
+
+    For each subject with enough trials and at least two classes, splits that
+    subject's trials (stratified), fits the class-conditional Markov model and
+    the occupancy baseline on the subject's train trials, evaluates held-out
+    accuracy, and runs a per-subject label-shuffle null. Aggregates across
+    subjects: how many individually beat their own null, the group binomial p
+    for that count under a 5% per-subject false-positive rate, mean held-out
+    accuracy, and mean trajectory gain (Markov minus occupancy).
+
+    The verdict is gated the same way as the cross-subject engine: a
+    "trajectory" claim needs the transitions to beat occupancy, not just the
+    shuffle null (ADR-011/012).
+    """
+    if n_permutations < 1:
+        raise ValueError(f"n_permutations must be >= 1; got {n_permutations}")
+    seqs = [np.asarray(s, dtype=int) for s in sequences]
+    subjects = sorted(set(subject_ids))
+
+    per_subject = {}
+    for subj in subjects:
+        rng = np.random.default_rng(hash((seed, str(subj))) % (2**32))
+        idx = [i for i in range(len(seqs)) if subject_ids[i] == subj]
+        if len(idx) < min_trials_per_subject:
+            continue
+        if len({labels[i] for i in idx}) < 2:
+            continue
+        split = _stratified_trial_split([(i, labels[i]) for i in idx],
+                                        train_frac, rng)
+        if split is None:
+            continue
+        tr, te = split
+        if len({labels[i] for i in tr}) < 2 or len({labels[i] for i in te}) < 2:
+            continue
+        x_tr, y_tr = [seqs[i] for i in tr], [labels[i] for i in tr]
+        x_te, y_te = [seqs[i] for i in te], [labels[i] for i in te]
+
+        model = fit_behavior_markov_model(x_tr, y_tr, n_states=n_states)
+        acc = evaluate_behavior_markov_model(model, x_te, y_te)["accuracy"]
+        occ = fit_occupancy_model(x_tr, y_tr, n_states=n_states)
+        occ_acc = evaluate_occupancy_model(occ, x_te, y_te)["accuracy"]
+
+        null = []
+        y_perm = np.array(y_tr, dtype=object)
+        for _ in range(n_permutations):
+            rng.shuffle(y_perm)
+            m = fit_behavior_markov_model(x_tr, y_perm.tolist(), n_states=n_states)
+            null.append(evaluate_behavior_markov_model(m, x_te, y_te)["accuracy"])
+        null = np.array(null, dtype=float)
+        p = float((np.sum(null >= acc) + 1) / (len(null) + 1))
+        per_subject[str(subj)] = {
+            "heldout_accuracy": float(acc),
+            "occupancy_accuracy": float(occ_acc),
+            "trajectory_gain": float(acc - occ_acc),
+            "p_value": p,
+            "n_train": len(y_tr),
+            "n_test": len(y_te),
+        }
+
+    n = len(per_subject)
+    if n == 0:
+        raise ValueError(
+            "no subject had enough trials / both classes on each split; "
+            "lower min_trials_per_subject or supply more trials"
+        )
+    accs = [r["heldout_accuracy"] for r in per_subject.values()]
+    gains = [r["trajectory_gain"] for r in per_subject.values()]
+    n_sig = sum(1 for r in per_subject.values() if r["p_value"] < 0.05)
+    # Group binomial: P(>= n_sig of n subjects significant) under a 5%
+    # per-subject false-positive rate. Small p means the hit rate exceeds
+    # chance across the cohort.
+    from math import comb
+    group_p = float(sum(comb(n, k) * 0.05**k * 0.95**(n - k)
+                        for k in range(n_sig, n + 1)))
+    mean_gain = float(np.mean(gains))
+
+    if group_p < 0.05 and mean_gain > 0:
+        verdict = ("within-subject: state TRAJECTORIES predict behavior "
+                   "(cohort hit-rate above chance AND transitions beat "
+                   "occupancy)")
+    elif group_p < 0.05:
+        verdict = ("within-subject: state OCCUPANCY predicts behavior "
+                   "(cohort above chance, but transitions add nothing over "
+                   "occupancy)")
+    else:
+        verdict = "within-subject: no evidence above per-subject nulls"
+
+    return {
+        "n_subjects": n,
+        "mean_heldout_accuracy": float(np.mean(accs)),
+        "n_subjects_significant": n_sig,
+        "group_binomial_p": group_p,
+        "mean_trajectory_gain": mean_gain,
+        "per_subject": per_subject,
+        "verdict": verdict,
+    }
