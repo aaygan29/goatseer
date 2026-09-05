@@ -109,6 +109,10 @@ def build_prototype_library(
 ) -> tuple[np.ndarray, np.ndarray]:
     """K-medoids-like prototype library on the AIRM manifold."""
     n = covs.shape[0]
+    if k < 2:
+        raise ValueError(f"k must be >= 2; got {k}")
+    if k > n:
+        raise ValueError(f"k={k} exceeds available covariance windows n={n}")
     rng = np.random.default_rng(seed)
     idx = rng.choice(n, k, replace=False)
     prototypes = covs[idx].copy()
@@ -173,6 +177,8 @@ def run(
     train_frac: float,
     seed: int,
 ) -> dict:
+    if n_permutations < 1:
+        raise ValueError(f"n_permutations must be >= 1; got {n_permutations}")
     trial_covs_all: list[np.ndarray] = []
     labels_all: list[str] = []
     subject_ids: list[int] = []
