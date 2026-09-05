@@ -48,7 +48,7 @@ Each experiment specifies:
 | `hmm_eeg/` | PhysioNet EEG-BCI | HMM vs VAR(1), confound-controlled (ADR-012). 8/8 subjects show latent-state structure beyond first-order. | G1, G4 (surrogate control), G14 |
 | `thought_propagation/` | Schaefer-100 (+Harvard-Oxford subcortex) + development_fmri | **Anatomical stimulus->behavior chain (ADR-013, 3/3 checks pass) + directed threat circuit with subcortical hubs and exogenous effectors (ADR-014).** | G1, G8, committor/MFPT/PCCA/absorption from dynamics.py |
 | `hmm_replicability/` | PhysioNet EEG-BCI runs 4+8 | A1 cross-session identification: does subject dynamics replicate BEYOND the marginal? Static-Gaussian ablation shipped as the specificity control (ADR-012). | G1, G3 (specificity ablation), G7 (external/cross-session) |
-| `connectome_behavior_prediction/` | PhysioNet EEG-BCI runs 4+8 | Trial-wise connectome-state trajectories predict behavior labels (T1/T2) and are tested against a shuffled-label null. | G1, G4, G7, G14 |
+| `connectome_behavior_prediction/` | PhysioNet EEG-BCI, or **bring your own** (`--input`) | Behavior from discrete state sequences, subject-disjoint split + occupancy ablation. Honest cross-subject NEGATIVE at n=20 (no trajectory signal beyond occupancy or null). Reusable engine `analyze_state_sequences`. | G1, G3 (occupancy ablation), G4 (shuffle null), G7 (subject-disjoint) |
 
 `spd_transition_eegbci` is the first real-data run in the repo. It
 implements the ADR-009 thought-trajectory transition kernel: per-epoch

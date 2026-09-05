@@ -24,10 +24,16 @@ from .abstention import (
 )
 from .behavior import (
     BehaviorMarkovModel,
+    OccupancyModel,
+    analyze_state_sequences,
     class_log_likelihood,
     evaluate_behavior_markov_model,
+    evaluate_occupancy_model,
     fit_behavior_markov_model,
+    fit_occupancy_model,
     predict_behavior,
+    predict_occupancy,
+    subject_disjoint_split,
 )
 from .calibration import SplitConformalCalibration
 from .circuit import (
@@ -128,10 +134,16 @@ __all__ = [
     "TriadResult",
     "evaluate_triad",
     "BehaviorMarkovModel",
+    "OccupancyModel",
+    "analyze_state_sequences",
     "class_log_likelihood",
     "evaluate_behavior_markov_model",
+    "evaluate_occupancy_model",
     "fit_behavior_markov_model",
+    "fit_occupancy_model",
     "predict_behavior",
+    "predict_occupancy",
+    "subject_disjoint_split",
     "field_is_ready",
     "sign_concordance_binomial_p",
     # Manifold primitives (ADR-008)
