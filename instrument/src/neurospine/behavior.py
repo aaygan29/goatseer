@@ -48,10 +48,28 @@ def fit_behavior_markov_model(
     n_states: int,
     laplace: float = 1.0,
 ) -> BehaviorMarkovModel:
-    """Fit class-conditional start and transition probabilities.
+    """Fit class-conditional start/transition probabilities.
 
-    Each behavior class gets its own Markov chain over the same discrete
-    connectome-state alphabet.
+    Parameters
+    ----------
+    state_sequences:
+        List of 1D integer arrays. Each array is one trial-level
+        connectome-state trajectory with values in [0, n_states-1].
+    labels:
+        Behavior label per sequence. Must have same length as
+        ``state_sequences``.
+    n_states:
+        Size of the shared discrete neural-state alphabet.
+    laplace:
+        Additive smoothing pseudo-count applied to start and transition
+        counts in each class.
+
+    Returns
+    -------
+    BehaviorMarkovModel
+        ``classes`` sorted unique labels, ``start_prob`` with shape
+        (n_classes, n_states), ``trans_prob`` with shape
+        (n_classes, n_states, n_states), and ``n_states``.
     """
     _validate_sequences(state_sequences, labels, n_states)
     if laplace <= 0.0:
@@ -114,6 +132,10 @@ def evaluate_behavior_markov_model(
     """Evaluate accuracy and confusion table on labeled sequences."""
     if len(state_sequences) != len(labels):
         raise ValueError("state_sequences and labels must have same length")
+
+    unknown = sorted({y for y in labels if y not in model.classes})
+    if unknown:
+        raise ValueError(f"evaluation labels not in model classes: {unknown}")
 
     preds = [predict_behavior(model, s) for s in state_sequences]
     acc = float(np.mean([p == y for p, y in zip(preds, labels)])) if labels else 0.0

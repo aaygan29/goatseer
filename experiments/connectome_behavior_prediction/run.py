@@ -22,14 +22,12 @@ import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "instrument" / "src"))
-sys.path.insert(0, str(REPO_ROOT / "experiments" / "spd_transition_eegbci"))
 
 from neurospine.behavior import (
     evaluate_behavior_markov_model,
     fit_behavior_markov_model,
 )
-from neurospine.manifold import airm_distance
-from run import build_prototype_library
+from neurospine.manifold import airm_distance, airm_frechet_mean
 
 SENSORIMOTOR_CHANNELS = ["C3", "C4", "Cz", "Fz", "Pz"]
 
@@ -106,6 +104,30 @@ def discretize_trials(trial_covs: list[np.ndarray], prototypes: np.ndarray) -> l
     return out
 
 
+def build_prototype_library(
+    covs: np.ndarray, k: int = 6, seed: int = 0, max_iter: int = 10
+) -> tuple[np.ndarray, np.ndarray]:
+    """K-medoids-like prototype library on the AIRM manifold."""
+    n = covs.shape[0]
+    rng = np.random.default_rng(seed)
+    idx = rng.choice(n, k, replace=False)
+    prototypes = covs[idx].copy()
+    labels = np.zeros(n, dtype=int)
+    for _ in range(max_iter):
+        new_labels = np.zeros(n, dtype=int)
+        for i in range(n):
+            dists = [airm_distance(covs[i], p) for p in prototypes]
+            new_labels[i] = int(np.argmin(dists))
+        if np.array_equal(new_labels, labels):
+            break
+        labels = new_labels
+        for j in range(k):
+            members = covs[labels == j]
+            if len(members) > 0:
+                prototypes[j] = airm_frechet_mean(list(members), max_iter=30)
+    return prototypes, labels
+
+
 def subject_disjoint_split(
     items: list[np.ndarray],
     labels: list[str],
@@ -113,6 +135,8 @@ def subject_disjoint_split(
     train_frac: float,
     seed: int,
 ) -> tuple[list[np.ndarray], list[str], list[np.ndarray], list[str], list[int], list[int]]:
+    if not (0.0 < train_frac < 1.0):
+        raise ValueError(f"train_frac must be in (0, 1); got {train_frac}")
     rng = np.random.default_rng(seed)
     unique_subjects = sorted(set(subjects))
     if len(unique_subjects) < 2:

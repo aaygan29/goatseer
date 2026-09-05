@@ -67,3 +67,9 @@ class TestBehaviorMarkovModel:
     def test_rejects_mismatched_input_lengths(self) -> None:
         with pytest.raises(ValueError):
             fit_behavior_markov_model([np.array([0, 1], dtype=int)], [], n_states=3)
+
+    def test_rejects_unknown_evaluation_label(self) -> None:
+        seqs, labels = _make_separable_sequences(n=10)
+        model = fit_behavior_markov_model(seqs, labels, n_states=4)
+        with pytest.raises(ValueError):
+            evaluate_behavior_markov_model(model, [np.array([0, 1, 0], dtype=int)], ["X"])
