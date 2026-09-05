@@ -126,3 +126,29 @@ gamma removed that artifact and all four readouts then fall together. The
 minimum control energy for the cortical control set to halve the amygdala
 (Gu et al. 2015 Gramian) is very large, consistent with deep,
 weakly-coupled nodes being expensive to control from cortex.
+
+## Data-derived effective connectivity (ADR-016)
+
+`effective_connectivity_threat.py` replaces the ADR-015 literature-prior
+edge SIGNS with signed directed weights ESTIMATED from real fMRI
+(nilearn development_fmri, the Pixar "Partly Cloudy" naturalistic
+paradigm), over the same augmented atlas. The estimator is a ridge
+VAR(1), `x_{t+1} = A x_t + e`, the regression-DCM regime (Frassle et al.
+2017); `neurospine.effective_connectivity`.
+
+    python experiments/thought_propagation/effective_connectivity_threat.py --n-subjects 25
+
+The headline is empirical: what sign does the data give prefrontal
+(control network) -> amygdala influence? Sign-consistency alone was
+misleading (0.58, near chance), so the run was hardened with the
+literature-standard controls: a group one-sample t-test across subjects
+and a time-reversed-Granger control (Vinck et al. 2015; Chvostekova et
+al. 2021). Result (n=25, 115 regions, spectral radius 0.46): prefrontal
+-> amygdala is inhibitory and statistically supported (mean -0.012,
+t=-2.29, p=0.031) and survives time reversal; amygdala -> prefrontal is
+more strongly negative (t=-2.94, p=0.007); Vis -> amygdala is positive
+but not significant. So the sign that carried the ADR-015 prediction is
+data-corroborated, not assumed. Honest scope: naturalistic movie, not a
+threat/regulation task; VAR(1) on fMRI is hemodynamically confounded;
+small weights. The method is the contribution; the signs are reported as
+estimated, not curated.

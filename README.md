@@ -118,11 +118,11 @@ prior project silently props up a NEUROSPINE claim.
 - **Literature**: 40+ external anchors indexed across
   `SYNTHESIS_computational.md`, `SYNTHESIS_biomedical.md`, and
   `SYNTHESIS_math_neuro.md`; 33+ BibTeX entries.
-- **ADRs**: 000 through 015 (scaffold, license, citation doctrine,
+- **ADRs**: 000 through 016 (scaffold, license, citation doctrine,
   extraction protocol, pivot to research study, two retirements,
   brain_state proposal, Riemannian-topological framework, transition
   kernel, math audit, Markov confound, HMM, anatomical propagation,
-  directed threat circuit, signed linear dynamics).
+  directed threat circuit, signed linear dynamics, effective connectivity).
 
 ## What NEUROSPINE actually is
 
@@ -189,3 +189,15 @@ lowers amygdala and effector drive, turning the limitation into a
 correct-direction, testable prediction, and adds the controllability
 Gramian / minimum-control-energy readout (Gu et al. 2015). See
 `experiments/thought_propagation/`.
+
+ADR-016 then removes the last assumption in that chain: the SIGN of the
+prefrontal -> amygdala edge. `effective_connectivity.py` estimates signed
+directed weights from real fMRI with a ridge VAR(1) (regression-DCM
+regime, Frassle et al. 2017), and the threat experiment reports what the
+data actually says. Sign-consistency alone was misleading (0.58, near
+chance), so the run was hardened with a group one-sample t-test and a
+time-reversed-Granger control (Vinck et al. 2015; Chvostekova et al.
+2021). On 25 subjects the prefrontal -> amygdala edge is estimated
+inhibitory, group-significant (t=-2.29, p=0.031), and survives time
+reversal, so the sign that carried the ADR-015 prediction is
+data-corroborated rather than assumed.

@@ -1,6 +1,6 @@
 # Synthesis: mathematical + computational-neuroscience anchors
 
-The math side of NEUROSPINE now rests on five load-bearing pillars.
+The math side of NEUROSPINE now rests on seven load-bearing pillars.
 Each pillar has its external anchor(s), maps to concrete `neurospine`
 package modules, and is verified by ADR-003-style identity tests.
 
@@ -177,6 +177,38 @@ subtraction. The signed linear model is the minimal dynamical regime
 that expresses top-down downregulation, and it turns the ADR-014
 ablation-2 limitation into a correct-direction prediction: increasing
 prefrontal regulatory gain lowers amygdala and effector drive.
+
+## Pillar 7: Effective connectivity from real BOLD (ADR-016)
+
+External anchors:
+
+- **Frassle et al. 2017, "Regression DCM for fMRI" (NeuroImage)**: a
+  linear DCM with fixed hemodynamics reduces to a Bayesian linear
+  regression; `effective_connectivity.py` implements a ridge analogue.
+- **Friston, Harrison, Penny 2003 (NeuroImage)**: the directed, signed
+  effective-connectivity framework.
+- **Seth, Barrett, Barnett 2015 (J. Neurosci.)**: VAR/Granger basis and
+  its fMRI confounds (hemodynamics, TR).
+- **Vinck et al. 2015 (NeuroImage)** and **Chvostekova et al. 2021
+  (Entropy)**: the time-reversed-Granger control that separates genuine
+  directionality from mixed-noise artifact.
+
+NEUROSPINE binding: `effective_connectivity.py` fits a ridge VAR(1) to
+regional BOLD (`fit_var1`), aggregates across subjects with a sign-
+consistency filter (`group_effective_connectivity`), and hardens each
+edge with a group one-sample t-test plus a time-reversed control
+(`edge_group_stats`). `test_effective_connectivity.py` verifies signed-
+matrix recovery (including an inhibitory edge), the discrete steady
+state, and the group-significance / time-reversal machinery on synthetic
+ground truth.
+
+This closes the loop opened in Pillar 6: the signed weights the linear
+system needed are now ESTIMATED from data, not assumed. On real fMRI the
+prefrontal -> amygdala edge is estimated inhibitory, group-significant
+(p about 0.03), and survives time reversal, corroborating the ADR-015
+regulation sign. The methodological point is that sign-consistency alone
+(0.58, near chance) understated the effect; the literature-standard group
+test and time-reversal control were load-bearing.
 
 ## Cross-cutting: information geometry, optimal transport, Bayesian brain
 
