@@ -25,7 +25,9 @@ sys.path.insert(0, str(REPO_ROOT / "instrument" / "src"))
 
 from neurospine.behavior import (
     evaluate_behavior_markov_model,
+    evaluate_occupancy_model,
     fit_behavior_markov_model,
+    fit_occupancy_model,
 )
 from neurospine.manifold import airm_distance, airm_frechet_mean
 
@@ -215,6 +217,14 @@ def run(
     model = fit_behavior_markov_model(x_tr, y_tr, n_states=n_states)
     observed = evaluate_behavior_markov_model(model, x_te, y_te)
 
+    # Occupancy (0th-order) ablation: a bag-of-states baseline that ignores
+    # temporal order. The Markov model earns the word "trajectory" only if
+    # its transition structure beats this on held-out data. Dynamics-vs-
+    # static confound, settled in ADR-011/012.
+    occ_model = fit_occupancy_model(x_tr, y_tr, n_states=n_states)
+    occ_observed = evaluate_occupancy_model(occ_model, x_te, y_te)
+    trajectory_gain = observed["accuracy"] - occ_observed["accuracy"]
+
     # Shuffle-label null: keep neural sequences fixed, randomize training labels.
     rng = np.random.default_rng(seed)
     null_acc = []
@@ -238,13 +248,28 @@ def run(
         "train_fraction": train_frac,
         "heldout_accuracy": float(observed["accuracy"]),
         "heldout_confusion": observed["confusion"],
+        "occupancy_ablation": {
+            "occupancy_accuracy": float(occ_observed["accuracy"]),
+            "markov_accuracy": float(observed["accuracy"]),
+            "trajectory_gain": float(trajectory_gain),
+            "note": (
+                "trajectory_gain = markov - occupancy. Positive and above "
+                "the null is the only thing that licenses a 'trajectory' "
+                "claim; the transition structure must beat marginal state "
+                "occupancy, not just the shuffle null."
+            ),
+        },
         "permutation_null": {
             "n_permutations": n_permutations,
             "mean_accuracy": float(null_acc_arr.mean()),
             "std_accuracy": float(null_acc_arr.std(ddof=1)) if len(null_acc_arr) > 1 else 0.0,
             "p_value_right_tail": p,
             "verdict": (
-                "connectome-state trajectories predict behavior above shuffled-label null"
+                "connectome-state TRAJECTORIES predict behavior: above the "
+                "shuffle null AND above the occupancy baseline"
+                if (p < 0.05 and trajectory_gain > 0)
+                else "connectome-state OCCUPANCY predicts behavior (above "
+                "null, but transitions add nothing over occupancy)"
                 if p < 0.05
                 else "no evidence above shuffled-label null"
             ),
@@ -255,6 +280,24 @@ def run(
     }
 
 
+def load_user_sequences(path: Path):
+    """Load a user's OWN discretized data for a bring-your-own-data run.
+
+    Accepts a .npz with arrays `sequences` (object array of 1D int arrays,
+    or a 2D int array of equal-length sequences), `labels` (1D), and
+    `subject_ids` (1D), or a .json with keys of the same names. This is the
+    only contract; the data can come from any modality.
+    """
+    if str(path).endswith(".json"):
+        with open(path) as f:
+            d = json.load(f)
+        seqs = [np.asarray(s, dtype=int) for s in d["sequences"]]
+        return seqs, list(d["labels"]), list(d["subject_ids"])
+    d = np.load(path, allow_pickle=True)
+    seqs = [np.asarray(s, dtype=int) for s in d["sequences"]]
+    return seqs, [str(x) for x in d["labels"]], list(d["subject_ids"])
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--subjects", nargs="+", type=int, default=[1, 2, 3, 4, 5])
@@ -263,25 +306,43 @@ def main() -> None:
     ap.add_argument("--n-permutations", type=int, default=200)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument(
+        "--input",
+        type=Path,
+        default=None,
+        help="Bring-your-own-data: a .npz/.json with `sequences`, `labels`, "
+             "`subject_ids`. When given, the PhysioNet EEG loader is skipped "
+             "and the analysis runs directly on your discretized sequences.",
+    )
+    ap.add_argument(
         "--out",
         type=Path,
         default=Path(__file__).parent / "results" / "connectome_behavior.json",
     )
     args = ap.parse_args()
 
-    try:
-        result = run(
-            subjects=args.subjects,
-            n_states=args.states,
-            n_permutations=args.n_permutations,
-            train_frac=args.train_frac,
+    if args.input is not None:
+        from neurospine.behavior import analyze_state_sequences
+        seqs, labels, subject_ids = load_user_sequences(args.input)
+        result = analyze_state_sequences(
+            seqs, labels, subject_ids, n_states=args.states,
+            n_permutations=args.n_permutations, train_frac=args.train_frac,
             seed=args.seed,
         )
-    except Exception as exc:
-        raise RuntimeError(
-            "Failed to run public EEG pipeline. If dataset download is blocked, "
-            "upload dataset files into this workspace and rerun."
-        ) from exc
+    else:
+        try:
+            result = run(
+                subjects=args.subjects,
+                n_states=args.states,
+                n_permutations=args.n_permutations,
+                train_frac=args.train_frac,
+                seed=args.seed,
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                "Failed to run public EEG pipeline. If dataset download is "
+                "blocked, upload dataset files into this workspace and rerun, "
+                "or use --input to run on your own discretized data."
+            ) from exc
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as f:
