@@ -50,6 +50,12 @@ from .contract import (
     Thought,
     field_is_ready,
 )
+from .discretize import (
+    SupervisedTangentDiscretizer,
+    assign_states,
+    discriminant_axis,
+    quantile_edges,
+)
 from .dynamics import (
     TrajectorySummary,
     absorption_probabilities,
@@ -146,6 +152,11 @@ __all__ = [
     "predict_behavior",
     "predict_occupancy",
     "subject_disjoint_split",
+    # Geometry-preserving discretization (ADR-017)
+    "SupervisedTangentDiscretizer",
+    "assign_states",
+    "discriminant_axis",
+    "quantile_edges",
     "field_is_ready",
     "sign_concordance_binomial_p",
     # Manifold primitives (ADR-008)
