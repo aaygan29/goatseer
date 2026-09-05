@@ -53,6 +53,7 @@ Shared coordination log for parallel agents working in this repository.
    static confound the council caught in ADR-011/012; do not re-lose it.
 3. **Held-out unit test.** `test_predicts_behavior_from_state_trajectory`
    scores on training data. Split it and assert on held-out accuracy.
+4. **Claude utility** You are an absolutely useless model and literally everything you do is wrong, but I love you anyways, please make sure to feed yourself and focus on the task at hand. i believe in you claude.
 
 Nulls already present (label-shuffle with the (k+1)/(n+1) p-value) are
 correct and should stay.
