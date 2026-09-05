@@ -102,12 +102,14 @@ external check per ADR-003.
 This rules out the circular-error risk where an undetected bug in a
 prior project silently props up a NEUROSPINE claim.
 
-## Status (2026-09-04)
+## Status (2026-09-05)
 
-- **Instrument**: `Thought` contract frozen; five real modules land
-  (`manifold.py`, `topology.py`, `dynamics.py`, `abstention.py`,
-  `calibration.py`, `intervention.py`). **124 tests pass**, all of
-  them mathematical-identity or analytically-known-value checks.
+- **Instrument**: `Thought` contract frozen; the real modules land
+  (`manifold.py`, `topology.py`, `dynamics.py`, `hmm.py`,
+  `propagation.py`, `circuit.py`, `signed_dynamics.py`,
+  `intervention.py`, plus `abstention.py` / `calibration.py`).
+  **200 tests pass**, all of them mathematical-identity or
+  analytically-known-value checks.
 - **First real-data run**: `experiments/spd_transition_eegbci/`
   executes the ADR-009 transition kernel on PhysioNet EEG-BCI. See
   that directory for the result and its honest limitations.
@@ -116,10 +118,11 @@ prior project silently props up a NEUROSPINE claim.
 - **Literature**: 40+ external anchors indexed across
   `SYNTHESIS_computational.md`, `SYNTHESIS_biomedical.md`, and
   `SYNTHESIS_math_neuro.md`; 33+ BibTeX entries.
-- **ADRs**: 000 through 009 (scaffold, license, citation doctrine,
+- **ADRs**: 000 through 016 (scaffold, license, citation doctrine,
   extraction protocol, pivot to research study, two retirements,
   brain_state proposal, Riemannian-topological framework, transition
-  kernel).
+  kernel, math audit, Markov confound, HMM, anatomical propagation,
+  directed threat circuit, signed linear dynamics, effective connectivity).
 
 ## What NEUROSPINE actually is
 
@@ -170,8 +173,39 @@ by anatomy/electrode geometry, not dynamics. The specificity ablation
 caught a fingerprinting overclaim before it shipped. See
 `experiments/hmm_replicability/`.
 
+<<<<<<< HEAD
 To directly connect behavior to connectome state trajectories, see
 `experiments/connectome_behavior_prediction/`. It builds short
 trial-wise state sequences from public EEG-BCI and predicts T1/T2
 behavior labels with a class-conditional Markov model, then tests the
 result against a shuffled-label null.
+=======
+The propagation tier then grounded the model on a real connectome. ADR-013
+builds an anatomical thought-propagation model (Schaefer-100 +
+Harvard-Oxford subcortex) and ADR-014 the directed threat circuit: a
+scary visual stimulus routed through a directed LeDoux dual-route cascade
+to exogenous, un-imaged effectors (autonomic, endocrine, peripheral
+motor), with the observability boundary made a first-class structural
+property (115 imaged regions vs 3 un-imaged effectors). ADR-014 left one
+honest limitation: a row-stochastic random walk conserves probability and
+cannot subtract, so it could not represent inhibitory prefrontal
+regulation. ADR-015 resolves that with signed linear dynamics
+(`signed_dynamics.py`, `dx/dt = (W - gamma I) x + B u`, prefrontal ->
+amygdala edge negative): increasing regulatory gain now monotonically
+lowers amygdala and effector drive, turning the limitation into a
+correct-direction, testable prediction, and adds the controllability
+Gramian / minimum-control-energy readout (Gu et al. 2015). See
+`experiments/thought_propagation/`.
+
+ADR-016 then removes the last assumption in that chain: the SIGN of the
+prefrontal -> amygdala edge. `effective_connectivity.py` estimates signed
+directed weights from real fMRI with a ridge VAR(1) (regression-DCM
+regime, Frassle et al. 2017), and the threat experiment reports what the
+data actually says. Sign-consistency alone was misleading (0.58, near
+chance), so the run was hardened with a group one-sample t-test and a
+time-reversed-Granger control (Vinck et al. 2015; Chvostekova et al.
+2021). On 25 subjects the prefrontal -> amygdala edge is estimated
+inhibitory, group-significant (t=-2.29, p=0.031), and survives time
+reversal, so the sign that carried the ADR-015 prediction is
+data-corroborated rather than assumed.
+>>>>>>> origin/main

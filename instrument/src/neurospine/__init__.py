@@ -87,6 +87,18 @@ from .manifold import (
     spd_tangent_embedding,
     spd_tangent_vector,
 )
+from .signed_dynamics import (
+    SignedLinearSystem,
+    build_signed_system,
+)
+from .effective_connectivity import (
+    directed_influence,
+    discrete_steady_state,
+    edge_group_stats,
+    fit_var1,
+    group_effective_connectivity,
+    spectral_radius,
+)
 from .propagation import (
     ActivationChain,
     AtlasPropagation,
@@ -149,6 +161,16 @@ __all__ = [
     "build_directed_circuit",
     "absorption_probabilities",
     "expected_steps_to_absorption",
+    # Signed linear dynamics for inhibitory regulation (ADR-015)
+    "SignedLinearSystem",
+    "build_signed_system",
+    # Effective connectivity from real BOLD (ADR-016)
+    "directed_influence",
+    "discrete_steady_state",
+    "edge_group_stats",
+    "fit_var1",
+    "group_effective_connectivity",
+    "spectral_radius",
     # Anatomical propagation (ADR-013)
     "ActivationChain",
     "AtlasPropagation",

@@ -102,3 +102,53 @@ This directly answers "how do you set up the response when imaging
 cannot capture it all": enumerate the full system, draw the
 observability boundary explicitly (115 imaged regions vs 3 un-imaged
 effectors), and quantify where the response goes across it.
+
+## Signed-dynamics regulation (ADR-015)
+
+`signed_threat_response.py` resolves the ADR-014 ablation-2 limitation.
+A row-stochastic random walk conserves probability, so it can only move
+activation, never subtract it, which is why adding a prefrontal ->
+amygdala edge wrongly INCREASED effector drive. This rebuilds the same
+circuit as a signed continuous-time linear rate model
+(`neurospine.signed_dynamics`, `dx/dt = (W - gamma I) x + B u`) with the
+prefrontal -> amygdala edge INHIBITORY (negative weight). Effectors are
+linear readouts of the neural steady state.
+
+    python experiments/thought_propagation/signed_threat_response.py
+
+Result: increasing prefrontal regulatory gain monotonically LOWERS
+amygdala activation and every effector readout (leak held fixed across
+the sweep; amygdala 3.08 -> 1.49 -> 0.86 as inhibitory gain goes
+0 -> 1 -> 2, autonomic and endocrine likewise). Inhibition now subtracts,
+so regulation dampens the threat response instead of amplifying it. An
+early run with a drifting leak moved MotorOutput the wrong way; fixing
+gamma removed that artifact and all four readouts then fall together. The
+minimum control energy for the cortical control set to halve the amygdala
+(Gu et al. 2015 Gramian) is very large, consistent with deep,
+weakly-coupled nodes being expensive to control from cortex.
+
+## Data-derived effective connectivity (ADR-016)
+
+`effective_connectivity_threat.py` replaces the ADR-015 literature-prior
+edge SIGNS with signed directed weights ESTIMATED from real fMRI
+(nilearn development_fmri, the Pixar "Partly Cloudy" naturalistic
+paradigm), over the same augmented atlas. The estimator is a ridge
+VAR(1), `x_{t+1} = A x_t + e`, the regression-DCM regime (Frassle et al.
+2017); `neurospine.effective_connectivity`.
+
+    python experiments/thought_propagation/effective_connectivity_threat.py --n-subjects 25
+
+The headline is empirical: what sign does the data give prefrontal
+(control network) -> amygdala influence? Sign-consistency alone was
+misleading (0.58, near chance), so the run was hardened with the
+literature-standard controls: a group one-sample t-test across subjects
+and a time-reversed-Granger control (Vinck et al. 2015; Chvostekova et
+al. 2021). Result (n=25, 115 regions, spectral radius 0.46): prefrontal
+-> amygdala is inhibitory and statistically supported (mean -0.012,
+t=-2.29, p=0.031) and survives time reversal; amygdala -> prefrontal is
+more strongly negative (t=-2.94, p=0.007); Vis -> amygdala is positive
+but not significant. So the sign that carried the ADR-015 prediction is
+data-corroborated, not assumed. Honest scope: naturalistic movie, not a
+threat/regulation task; VAR(1) on fMRI is hemodynamically confounded;
+small weights. The method is the contribution; the signs are reported as
+estimated, not curated.
