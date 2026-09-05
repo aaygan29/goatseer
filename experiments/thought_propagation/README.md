@@ -102,3 +102,27 @@ This directly answers "how do you set up the response when imaging
 cannot capture it all": enumerate the full system, draw the
 observability boundary explicitly (115 imaged regions vs 3 un-imaged
 effectors), and quantify where the response goes across it.
+
+## Signed-dynamics regulation (ADR-015)
+
+`signed_threat_response.py` resolves the ADR-014 ablation-2 limitation.
+A row-stochastic random walk conserves probability, so it can only move
+activation, never subtract it, which is why adding a prefrontal ->
+amygdala edge wrongly INCREASED effector drive. This rebuilds the same
+circuit as a signed continuous-time linear rate model
+(`neurospine.signed_dynamics`, `dx/dt = (W - gamma I) x + B u`) with the
+prefrontal -> amygdala edge INHIBITORY (negative weight). Effectors are
+linear readouts of the neural steady state.
+
+    python experiments/thought_propagation/signed_threat_response.py
+
+Result: increasing prefrontal regulatory gain monotonically LOWERS
+amygdala activation and every effector readout (leak held fixed across
+the sweep; amygdala 3.08 -> 1.49 -> 0.86 as inhibitory gain goes
+0 -> 1 -> 2, autonomic and endocrine likewise). Inhibition now subtracts,
+so regulation dampens the threat response instead of amplifying it. An
+early run with a drifting leak moved MotorOutput the wrong way; fixing
+gamma removed that artifact and all four readouts then fall together. The
+minimum control energy for the cortical control set to halve the amygdala
+(Gu et al. 2015 Gramian) is very large, consistent with deep,
+weakly-coupled nodes being expensive to control from cortex.
