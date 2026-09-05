@@ -169,3 +169,9 @@ better than the static marginal covariance, so the identity is carried
 by anatomy/electrode geometry, not dynamics. The specificity ablation
 caught a fingerprinting overclaim before it shipped. See
 `experiments/hmm_replicability/`.
+
+To directly connect behavior to connectome state trajectories, see
+`experiments/connectome_behavior_prediction/`. It builds short
+trial-wise state sequences from public EEG-BCI and predicts T1/T2
+behavior labels with a class-conditional Markov model, then tests the
+result against a shuffled-label null.

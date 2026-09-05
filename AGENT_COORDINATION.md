@@ -25,6 +25,9 @@ This file is the shared coordination log for parallel agents working in this rep
 - Shared API surface should be documented before cross-module edits.
 - If both agents need the same file, coordinate ownership here first.
 - List merge risks and required validation before final merge.
+- Copilot agent performs a second-pass mathematical and test review on
+  Claude-authored changes before integration.
 
 ## Change Log
 - 2026-09-05: Created coordination file and reserved behavior-prediction module for Copilot workstream.
+- 2026-09-05: Added explicit second-pass review rule for Claude-authored work.
