@@ -22,6 +22,13 @@ from .abstention import (
     evaluate_triad,
     sign_concordance_binomial_p,
 )
+from .behavior import (
+    BehaviorMarkovModel,
+    class_log_likelihood,
+    evaluate_behavior_markov_model,
+    fit_behavior_markov_model,
+    predict_behavior,
+)
 from .calibration import SplitConformalCalibration
 from .circuit import (
     DirectedCircuit,
@@ -38,35 +45,35 @@ from .contract import (
 )
 from .dynamics import (
     TrajectorySummary,
+    absorption_probabilities,
     committor,
     entropy_rate,
     estimate_transition_matrix,
+    expected_steps_to_absorption,
     mean_first_passage_time,
     perron_cluster_analysis,
     spectral_gap,
     stationary_distribution,
     summarize_trajectory,
-    absorption_probabilities,
-    expected_steps_to_absorption,
 )
 from .harness import Neurospine, ProviderGates
 from .hmm import GaussianHMM
 from .intervention import (
+    PURPOSE_REGISTRY,
     ChannelScore,
     Intervention,
     InterventionChannel,
-    PURPOSE_REGISTRY,
     PurposeNotRegisteredError,
     score_intervention_channels,
 )
 from .manifold import (
-    airm_geodesic_min_distance,
     Family,
     LatentState,
     airm_distance,
     airm_exp_map,
     airm_frechet_mean,
     airm_geodesic,
+    airm_geodesic_min_distance,
     airm_inner,
     airm_log_map,
     airm_parallel_transport,
@@ -111,17 +118,21 @@ __all__ = [
     # Cognitive-Dark-Matter taxonomy + contract
     "COGNITIVE_DARK_MATTER_DOMAINS",
     "FIELD_GATES",
-    "NotYetGatedError",
-    "Thought",
-    "field_is_ready",
-    # Harness + providers
     "GaussianHMM",
     "GoltermannHuthAbstention",
+    "NotYetGatedError",
     "Neurospine",
     "ProviderGates",
     "SplitConformalCalibration",
+    "Thought",
     "TriadResult",
     "evaluate_triad",
+    "BehaviorMarkovModel",
+    "class_log_likelihood",
+    "evaluate_behavior_markov_model",
+    "fit_behavior_markov_model",
+    "predict_behavior",
+    "field_is_ready",
     "sign_concordance_binomial_p",
     # Manifold primitives (ADR-008)
     "Family",
