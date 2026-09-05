@@ -49,24 +49,38 @@ from neurospine.manifold import (  # noqa: E402
 )
 
 SENSORIMOTOR = ["C3", "C4", "Cz", "Fz", "Pz"]
+# A wider sensorimotor montage (intersected with what is available) for the
+# tightened, higher-power run: lateralization lives across the motor strip.
+MOTOR_MONTAGE = ["FC3", "FC1", "FCz", "FC2", "FC4", "C3", "C1", "Cz", "C2",
+                 "C4", "CP3", "CP1", "CPz", "CP2", "CP4"]
 
 
-def _cov(x, ridge=1e-3):
+def _cov(x, method="ridge", ridge=1e-3):
+    """Window covariance. `ridge` adds a trace-scaled diagonal; `ledoit`
+    uses Ledoit-Wolf shrinkage, which is what keeps a higher-channel
+    covariance well-conditioned (and the tangent map stable)."""
+    if method == "ledoit":
+        from sklearn.covariance import LedoitWolf
+        c = LedoitWolf(assume_centered=False).fit(x.T).covariance_
+        return 0.5 * (c + c.T) + 1e-6 * np.eye(c.shape[0])
     c = (x @ x.T) / (x.shape[1] - 1)
     c = 0.5 * (c + c.T)
     return c + ridge * np.eye(c.shape[0]) * np.trace(c) / c.shape[0]
 
 
-def load_trials(subject, runs=(4, 8), trial_s=4.0, window_s=1.0):
+def load_trials(subject, runs=(4, 8), trial_s=4.0, window_s=1.0,
+                channels=None, cov_method="ridge"):
     import mne
     from mne.datasets import eegbci
 
+    channels = channels or SENSORIMOTOR
     files = fetch_eegbci([subject], runs=runs)[subject]
     raws = [mne.io.read_raw_edf(f, preload=True, verbose="ERROR") for f in files]
     raw = mne.concatenate_raws(raws)
     eegbci.standardize(raw)
     raw.set_montage("standard_1020", on_missing="ignore")
-    raw.pick(SENSORIMOTOR, verbose="ERROR")
+    picks = [c for c in channels if c in raw.ch_names]
+    raw.pick(picks, verbose="ERROR")
     raw.set_eeg_reference("average", projection=False, verbose="ERROR")
     raw.filter(8.0, 30.0, fir_design="firwin", verbose="ERROR")
     events, event_id = mne.events_from_annotations(raw, verbose="ERROR")
@@ -84,7 +98,8 @@ def load_trials(subject, runs=(4, 8), trial_s=4.0, window_s=1.0):
         if end > n:
             continue
         trial = data[:, int(sample):end]
-        covs.append(np.stack([_cov(trial[:, i:i + ws]) for i in range(0, ts, ws)]))
+        covs.append(np.stack([_cov(trial[:, i:i + ws], method=cov_method)
+                              for i in range(0, ts, ws)]))
         labels.append(lab)
     return covs, labels
 
@@ -211,13 +226,22 @@ def main():
     ap.add_argument("--states", type=int, default=5)
     ap.add_argument("--n-permutations", type=int, default=200)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--channels", choices=["minimal", "motor"], default="minimal",
+                    help="'minimal' = 5 channels (original ADR-017 run); "
+                         "'motor' = wider sensorimotor montage (tightened run).")
+    ap.add_argument("--shrinkage", choices=["ridge", "ledoit"], default="ridge",
+                    help="covariance estimator; ledoit-wolf for higher channels.")
+    ap.add_argument("--runs", nargs="+", type=int, default=[4, 8],
+                    help="EEG-BCI runs; add 12 for more fist-imagery trials.")
     ap.add_argument("--out", type=Path,
                     default=Path(__file__).parent / "results" / "geometry_preserving.json")
     args = ap.parse_args()
+    channels = MOTOR_MONTAGE if args.channels == "motor" else SENSORIMOTOR
 
     per_subject = {}
     for s in args.subjects:
-        covs, labels = load_trials(s)
+        covs, labels = load_trials(s, runs=tuple(args.runs), channels=channels,
+                                   cov_method=args.shrinkage)
         if len(set(labels)) < 2:
             continue
         rng = np.random.default_rng(hash((args.seed, s)) % (2**32))
@@ -250,6 +274,9 @@ def main():
     group_p_occ = float(sum(comb(n, j) * 0.05**j * 0.95**(n - j)
                             for j in range(n_sig_occ, n + 1)))
     summary = {
+        "config": {"channels": args.channels, "n_channels": len(channels),
+                   "shrinkage": args.shrinkage, "runs": list(args.runs),
+                   "states": args.states, "n_permutations": args.n_permutations},
         "n_subjects": n,
         "mean_prototype_markov_acc": mean("prototype_markov_acc"),
         "mean_tangent_occupancy_acc": mean("tangent_occupancy_acc"),
