@@ -130,8 +130,7 @@ def evaluate_behavior_markov_model(
     labels: list[str],
 ) -> dict:
     """Evaluate accuracy and confusion table on labeled sequences."""
-    if len(state_sequences) != len(labels):
-        raise ValueError("state_sequences and labels must have same length")
+    _validate_sequences(state_sequences, labels, model.n_states)
 
     unknown = sorted({y for y in labels if y not in model.classes})
     if unknown:

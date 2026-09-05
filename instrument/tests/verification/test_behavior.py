@@ -73,3 +73,9 @@ class TestBehaviorMarkovModel:
         model = fit_behavior_markov_model(seqs, labels, n_states=4)
         with pytest.raises(ValueError):
             evaluate_behavior_markov_model(model, [np.array([0, 1, 0], dtype=int)], ["X"])
+
+    def test_rejects_empty_evaluation_sequences(self) -> None:
+        seqs, labels = _make_separable_sequences(n=10)
+        model = fit_behavior_markov_model(seqs, labels, n_states=4)
+        with pytest.raises(ValueError):
+            evaluate_behavior_markov_model(model, [], [])

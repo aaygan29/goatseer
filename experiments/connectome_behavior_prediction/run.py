@@ -33,7 +33,8 @@ SENSORIMOTOR_CHANNELS = ["C3", "C4", "Cz", "Fz", "Pz"]
 
 
 def _covariance(x: np.ndarray, ridge: float = 1e-3) -> np.ndarray:
-    c = (x @ x.T) / (x.shape[1] - 1)
+    xc = x - x.mean(axis=1, keepdims=True)
+    c = (xc @ xc.T) / (x.shape[1] - 1)
     c = 0.5 * (c + c.T)
     c += ridge * np.eye(c.shape[0]) * np.trace(c) / c.shape[0]
     return c
@@ -145,7 +146,7 @@ def subject_disjoint_split(
     unique_subjects = sorted(set(subjects))
     if len(unique_subjects) < 2:
         raise ValueError("need at least 2 subjects for subject-disjoint train/test split")
-    n_train_subjects = max(1, round(train_frac * len(unique_subjects)))
+    n_train_subjects = max(1, int(train_frac * len(unique_subjects)))
     n_train_subjects = min(n_train_subjects, len(unique_subjects) - 1)
 
     max_tries = 256
