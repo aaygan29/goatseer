@@ -9,6 +9,7 @@ trajectory dynamics.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import pairwise
 
 import numpy as np
 
@@ -66,7 +67,7 @@ def fit_behavior_markov_model(
     for seq, label in zip(state_sequences, labels):
         ci = idx[label]
         start[ci, seq[0]] += 1.0
-        for a, b in zip(seq[:-1], seq[1:]):
+        for a, b in pairwise(seq):
             trans[ci, a, b] += 1.0
 
     start /= start.sum(axis=1, keepdims=True)
@@ -93,7 +94,7 @@ def class_log_likelihood(model: BehaviorMarkovModel, seq: np.ndarray) -> np.ndar
     out = np.zeros(len(model.classes), dtype=float)
     for ci in range(len(model.classes)):
         ll = log_start[ci, seq[0]]
-        for a, b in zip(seq[:-1], seq[1:]):
+        for a, b in pairwise(seq):
             ll += log_trans[ci, a, b]
         out[ci] = ll
     return out

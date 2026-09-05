@@ -23,12 +23,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "instrument" / "src"))
 sys.path.insert(0, str(REPO_ROOT / "experiments" / "spd_transition_eegbci"))
 
-from neurospine.behavior import (  # noqa: E402
+from neurospine.behavior import (
     evaluate_behavior_markov_model,
     fit_behavior_markov_model,
 )
-from neurospine.manifold import airm_distance  # noqa: E402
-from run import build_prototype_library  # noqa: E402
+from neurospine.manifold import airm_distance
+from run import build_prototype_library
 
 SENSORIMOTOR_CHANNELS = ["C3", "C4", "Cz", "Fz", "Pz"]
 
@@ -63,8 +63,8 @@ def load_trial_covariances(
     inv = {v: k for k, v in event_id.items()}
 
     sfreq = float(raw.info["sfreq"])
-    trial_samples = int(round(trial_seconds * sfreq))
-    window_samples = int(round(window_seconds * sfreq))
+    trial_samples = round(trial_seconds * sfreq)
+    window_samples = round(window_seconds * sfreq)
     if trial_samples % window_samples != 0:
         raise ValueError("trial_seconds must be an integer multiple of window_seconds")
 
@@ -114,7 +114,7 @@ def stratified_split(
     for c in sorted(set(labels)):
         idx = [i for i, y in enumerate(labels) if y == c]
         rng.shuffle(idx)
-        n_train = max(1, int(round(train_frac * len(idx))))
+        n_train = max(1, round(train_frac * len(idx)))
         n_train = min(n_train, len(idx) - 1)
         train_idx.extend(idx[:n_train])
         test_idx.extend(idx[n_train:])

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-
 from neurospine.behavior import (
     class_log_likelihood,
     evaluate_behavior_markov_model,

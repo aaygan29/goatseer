@@ -27,7 +27,10 @@ This file is the shared coordination log for parallel agents working in this rep
 - List merge risks and required validation before final merge.
 - Copilot agent performs a second-pass mathematical and test review on
   Claude-authored changes before integration.
+- Claude feedback is reviewed and sanity-checked against tests, math
+  invariants, and repository ADRs before any adoption.
 
 ## Change Log
 - 2026-09-05: Created coordination file and reserved behavior-prediction module for Copilot workstream.
 - 2026-09-05: Added explicit second-pass review rule for Claude-authored work.
+- 2026-09-05: Added rule to critically validate Claude critiques before adopting changes.
