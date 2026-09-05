@@ -7,7 +7,8 @@ Pipeline:
    connectome-state sequence.
 4. Fit a class-conditional Markov model from state sequences to behavior
    labels (T1/T2).
-5. Evaluate held-out accuracy and compare against a label-shuffle null.
+5. Evaluate held-out accuracy on a subject-disjoint split and compare
+   against a label-shuffle null.
 """
 
 from __future__ import annotations
@@ -105,23 +106,27 @@ def discretize_trials(trial_covs: list[np.ndarray], prototypes: np.ndarray) -> l
     return out
 
 
-def stratified_split(
-    items: list[np.ndarray], labels: list[str], train_frac: float, seed: int
-) -> tuple[list[np.ndarray], list[str], list[np.ndarray], list[str]]:
+def subject_disjoint_split(
+    items: list[np.ndarray],
+    labels: list[str],
+    subjects: list[int],
+    train_frac: float,
+    seed: int,
+) -> tuple[list[np.ndarray], list[str], list[np.ndarray], list[str], list[int], list[int]]:
     rng = np.random.default_rng(seed)
-    train_idx: list[int] = []
-    test_idx: list[int] = []
-    for c in sorted(set(labels)):
-        idx = [i for i, y in enumerate(labels) if y == c]
-        if len(idx) < 2:
-            raise ValueError(
-                f"class {c!r} has {len(idx)} sample; need at least 2 for train/test split"
-            )
-        rng.shuffle(idx)
-        n_train = max(1, round(train_frac * len(idx)))
-        n_train = min(n_train, len(idx) - 1)
-        train_idx.extend(idx[:n_train])
-        test_idx.extend(idx[n_train:])
+    unique_subjects = sorted(set(subjects))
+    if len(unique_subjects) < 2:
+        raise ValueError("need at least 2 subjects for subject-disjoint train/test split")
+    rng.shuffle(unique_subjects)
+
+    n_train_subjects = max(1, round(train_frac * len(unique_subjects)))
+    n_train_subjects = min(n_train_subjects, len(unique_subjects) - 1)
+    train_subjects = sorted(unique_subjects[:n_train_subjects])
+    test_subjects = sorted(unique_subjects[n_train_subjects:])
+
+    train_set = set(train_subjects)
+    train_idx = [i for i, s in enumerate(subjects) if s in train_set]
+    test_idx = [i for i, s in enumerate(subjects) if s not in train_set]
     train_idx.sort()
     test_idx.sort()
 
@@ -129,7 +134,12 @@ def stratified_split(
     y_tr = [labels[i] for i in train_idx]
     x_te = [items[i] for i in test_idx]
     y_te = [labels[i] for i in test_idx]
-    return x_tr, y_tr, x_te, y_te
+    if len(set(y_tr)) < 2 or len(set(y_te)) < 2:
+        raise ValueError(
+            "subject split removed one behavior class from train or test; "
+            "add more subjects or change split seed"
+        )
+    return x_tr, y_tr, x_te, y_te, train_subjects, test_subjects
 
 
 def run(
@@ -149,8 +159,15 @@ def run(
         labels_all.extend(ys)
         subject_ids.extend([subject] * len(ys))
 
-    trial_covs_tr, y_tr, trial_covs_te, y_te = stratified_split(
-        trial_covs_all, labels_all, train_frac, seed
+    (
+        trial_covs_tr,
+        y_tr,
+        trial_covs_te,
+        y_te,
+        train_subjects,
+        test_subjects,
+    ) = subject_disjoint_split(
+        trial_covs_all, labels_all, subject_ids, train_frac, seed
     )
 
     # Learn shared connectome-state library from training trial windows only.
@@ -180,6 +197,8 @@ def run(
         "n_train": len(y_tr),
         "n_test": len(y_te),
         "labels": sorted(set(labels_all)),
+        "train_subjects": train_subjects,
+        "test_subjects": test_subjects,
         "n_states": n_states,
         "train_fraction": train_frac,
         "heldout_accuracy": float(observed["accuracy"]),

@@ -11,8 +11,9 @@ null.
 3. For each cue event (T1/T2), build a 4-second trial and split into 1-second windows.
 4. Compute one SPD covariance matrix per window.
 5. Learn an AIRM prototype library and discretize each window to a state id.
-6. Fit a class-conditional Markov model from state-sequence to behavior label.
-7. Evaluate held-out accuracy and run a permutation null by shuffling labels.
+6. Split by subject so train and test subjects are disjoint.
+7. Fit a class-conditional Markov model from state-sequence to behavior label.
+8. Evaluate held-out accuracy and run a permutation null by shuffling labels.
 
 ## Run
 
