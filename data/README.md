@@ -22,6 +22,7 @@ Two ways data enters the repo:
 | `schaefer_2018` | atlas | Cortical parcellation (100 parcels, 7 networks) | `nilearn.datasets.fetch_atlas_schaefer_2018` (auto) | MIT; Schaefer et al. 2018 |
 | `harvard_oxford` | atlas | Subcortical ROIs (amygdala, thalamus, brainstem, ...) | `nilearn.datasets.fetch_atlas_harvard_oxford` (auto) | FSL; Makris et al. 2006 |
 | `ds000221` (MPI Leipzig LEMON) | EEG | Eyes-open vs eyes-closed WITHIN-subject contrast (Berger effect); substrate for within-subject decoding | `bash scripts/fetch_lemon_subset.sh` then `neurospine.io.load_bids_eeg` (script) | CC0-like MPI-CBS DUA; Babayan et al. 2019 |
+| `sleep_edfx` (PhysioNet Sleep-EDF Expanded) | EEG | Sleep-stage sequences with real transition structure; the trajectory-model positive control (ADR-018/019) | `bash scripts/fetch_sleep_edfx_subset.sh` then read PSG + Hypnogram EDFs (script) | Open Data Commons Attribution v1.0; Kemp et al. 2000, Goldberger et al. 2000 |
 
 ## How to fetch
 
