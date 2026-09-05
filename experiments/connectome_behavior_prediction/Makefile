@@ -9,4 +9,4 @@ real: synthetic
 	python3 experiments/connectome_behavior_prediction/run.py --subjects 1 2 3 4 5
 
 clean:
-	rm -rf results/
+	rm -rf experiments/connectome_behavior_prediction/results/

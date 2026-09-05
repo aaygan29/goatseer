@@ -106,13 +106,17 @@ def discretize_trials(trial_covs: list[np.ndarray], prototypes: np.ndarray) -> l
 
 
 def stratified_split(
-    seqs: list[np.ndarray], labels: list[str], train_frac: float, seed: int
+    items: list[np.ndarray], labels: list[str], train_frac: float, seed: int
 ) -> tuple[list[np.ndarray], list[str], list[np.ndarray], list[str]]:
     rng = np.random.default_rng(seed)
     train_idx: list[int] = []
     test_idx: list[int] = []
     for c in sorted(set(labels)):
         idx = [i for i, y in enumerate(labels) if y == c]
+        if len(idx) < 2:
+            raise ValueError(
+                f"class {c!r} has {len(idx)} sample; need at least 2 for train/test split"
+            )
         rng.shuffle(idx)
         n_train = max(1, round(train_frac * len(idx)))
         n_train = min(n_train, len(idx) - 1)
@@ -121,9 +125,9 @@ def stratified_split(
     train_idx.sort()
     test_idx.sort()
 
-    x_tr = [seqs[i] for i in train_idx]
+    x_tr = [items[i] for i in train_idx]
     y_tr = [labels[i] for i in train_idx]
-    x_te = [seqs[i] for i in test_idx]
+    x_te = [items[i] for i in test_idx]
     y_te = [labels[i] for i in test_idx]
     return x_tr, y_tr, x_te, y_te
 
@@ -145,12 +149,16 @@ def run(
         labels_all.extend(ys)
         subject_ids.extend([subject] * len(ys))
 
-    # Learn shared connectome-state library from all trial windows.
-    windows = np.concatenate(trial_covs_all, axis=0)
+    trial_covs_tr, y_tr, trial_covs_te, y_te = stratified_split(
+        trial_covs_all, labels_all, train_frac, seed
+    )
+
+    # Learn shared connectome-state library from training trial windows only.
+    windows = np.concatenate(trial_covs_tr, axis=0)
     prototypes, _ = build_prototype_library(windows, k=n_states, seed=seed)
 
-    sequences = discretize_trials(trial_covs_all, prototypes)
-    x_tr, y_tr, x_te, y_te = stratified_split(sequences, labels_all, train_frac, seed)
+    x_tr = discretize_trials(trial_covs_tr, prototypes)
+    x_te = discretize_trials(trial_covs_te, prototypes)
 
     model = fit_behavior_markov_model(x_tr, y_tr, n_states=n_states)
     observed = evaluate_behavior_markov_model(model, x_te, y_te)
