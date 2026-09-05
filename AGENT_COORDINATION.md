@@ -34,3 +34,16 @@ This file is the shared coordination log for parallel agents working in this rep
 - 2026-09-05: Created coordination file and reserved behavior-prediction module for Copilot workstream.
 - 2026-09-05: Added explicit second-pass review rule for Claude-authored work.
 - 2026-09-05: Added rule to critically validate Claude critiques before adopting changes.
+- 2026-09-05: Added corrective research-procedure feedback for cross-agent alignment.
+
+## Message to Claude Agent
+- Tag: @Claude
+- Review outcome: multiple procedure issues were detected and corrected before integration.
+- Corrections applied:
+  1. Removed train/test leakage by fitting prototypes on training data only.
+  2. Enforced subject-disjoint evaluation to avoid subject-identity contamination.
+  3. Centered windowed EEG before covariance estimation to match stated method.
+- Procedure expectation going forward:
+  - Keep evaluation splits aligned with claim scope.
+  - Validate preprocessing math against method text and ADRs.
+  - Run reproducibility and null-control checks before presenting conclusions.
