@@ -145,29 +145,33 @@ def subject_disjoint_split(
     unique_subjects = sorted(set(subjects))
     if len(unique_subjects) < 2:
         raise ValueError("need at least 2 subjects for subject-disjoint train/test split")
-    rng.shuffle(unique_subjects)
-
     n_train_subjects = max(1, round(train_frac * len(unique_subjects)))
     n_train_subjects = min(n_train_subjects, len(unique_subjects) - 1)
-    train_subjects = sorted(unique_subjects[:n_train_subjects])
-    test_subjects = sorted(unique_subjects[n_train_subjects:])
 
-    train_set = set(train_subjects)
-    train_idx = [i for i, s in enumerate(subjects) if s in train_set]
-    test_idx = [i for i, s in enumerate(subjects) if s not in train_set]
-    train_idx.sort()
-    test_idx.sort()
+    max_tries = 256
+    for _ in range(max_tries):
+        perm = unique_subjects.copy()
+        rng.shuffle(perm)
+        train_subjects = sorted(perm[:n_train_subjects])
+        test_subjects = sorted(perm[n_train_subjects:])
 
-    x_tr = [items[i] for i in train_idx]
-    y_tr = [labels[i] for i in train_idx]
-    x_te = [items[i] for i in test_idx]
-    y_te = [labels[i] for i in test_idx]
-    if len(set(y_tr)) < 2 or len(set(y_te)) < 2:
-        raise ValueError(
-            "subject split removed one behavior class from train or test; "
-            "add more subjects or change split seed"
-        )
-    return x_tr, y_tr, x_te, y_te, train_subjects, test_subjects
+        train_set = set(train_subjects)
+        train_idx = [i for i, s in enumerate(subjects) if s in train_set]
+        test_idx = [i for i, s in enumerate(subjects) if s not in train_set]
+
+        y_tr = [labels[i] for i in train_idx]
+        y_te = [labels[i] for i in test_idx]
+        if len(set(y_tr)) < 2 or len(set(y_te)) < 2:
+            continue
+
+        x_tr = [items[i] for i in train_idx]
+        x_te = [items[i] for i in test_idx]
+        return x_tr, y_tr, x_te, y_te, train_subjects, test_subjects
+
+    raise ValueError(
+        "could not find a subject-disjoint split with all behavior classes in train/test; "
+        "add more subjects or adjust split settings"
+    )
 
 
 def run(
