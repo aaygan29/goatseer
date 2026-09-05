@@ -22,6 +22,13 @@ from .abstention import (
     evaluate_triad,
     sign_concordance_binomial_p,
 )
+from .behavior import (
+    BehaviorMarkovModel,
+    class_log_likelihood,
+    evaluate_behavior_markov_model,
+    fit_behavior_markov_model,
+    predict_behavior,
+)
 from .calibration import SplitConformalCalibration
 from .circuit import (
     DirectedCircuit,
@@ -111,6 +118,11 @@ __all__ = [
     "TriadResult",
     "evaluate_triad",
     "sign_concordance_binomial_p",
+    "BehaviorMarkovModel",
+    "class_log_likelihood",
+    "evaluate_behavior_markov_model",
+    "fit_behavior_markov_model",
+    "predict_behavior",
     # Manifold primitives (ADR-008)
     "Family",
     "LatentState",
