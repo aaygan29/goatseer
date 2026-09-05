@@ -28,9 +28,14 @@ class TestRegistry:
 
     def test_every_dataset_has_required_provenance(self) -> None:
         for v in DATASETS.values():
-            assert v.modality in {"eeg", "fmri", "atlas"}
+            assert v.modality in {"eeg", "fmri", "atlas", "eeg+fmri"}
             assert v.role and v.license and v.fetch
             assert v.status in {"auto", "script", "not-public"}
+
+    def test_clinical_and_decision_sources_registered(self) -> None:
+        # The multi-source integration hub: clinical fMRI + decision + clinical EEG.
+        for did in ("adhd200", "ds002739", "ds003478"):
+            assert did in DATASETS
 
     def test_core_datasets_present(self) -> None:
         for did in ("eegmmidb", "development_fmri", "ds000221"):

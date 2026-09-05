@@ -91,6 +91,41 @@ DATASETS = {
         status="script",
         url="https://physionet.org/content/sleep-edfx/1.0.0/",
     ),
+    "adhd200": DatasetInfo(
+        dataset_id="adhd200",
+        modality="fmri",
+        role="ADHD-200 resting-state fMRI, patients vs typically-developing "
+             "controls with phenotypic labels. A CLINICAL source for the "
+             "validity-hardening / disordered-population line. Heavily "
+             "confounded by site and motion; any group claim must control "
+             "for both.",
+        license="ADHD-200 Consortium open terms; cite ADHD-200 Consortium 2012.",
+        fetch="fetch_adhd(n_subjects)",
+        status="auto",
+        url="https://nilearn.github.io/dev/modules/description/adhd.html",
+    ),
+    "ds002739": DatasetInfo(
+        dataset_id="ds002739",
+        modality="eeg+fmri",
+        role="Perceptual decision-making (random-dot-motion) EEG+fMRI with "
+             "trial-level choice, RT, and confidence. WITHIN-trial evidence "
+             "accumulation, the target for the decision-making trajectory "
+             "experiment (ADR-018).",
+        license="OpenNeuro CC0; cite Rungratsameetaweemana et al.",
+        fetch="openneuro.download(dataset='ds002739'), then mne_bids / nilearn",
+        status="script",
+        url="https://openneuro.org/datasets/ds002739",
+    ),
+    "ds003478": DatasetInfo(
+        dataset_id="ds003478",
+        modality="eeg",
+        role="Resting EEG, high-BDI (depressed) vs low-BDI controls (Allen "
+             "lab). A CLINICAL EEG source matching the existing EEG modality.",
+        license="OpenNeuro CC0; cite Allen lab / NEMAR ds003478.",
+        fetch="openneuro.download(dataset='ds003478'), then load_bids_eeg",
+        status="script",
+        url="https://openneuro.org/datasets/ds003478",
+    ),
     "schaefer_2018": DatasetInfo(
         dataset_id="schaefer_2018",
         modality="atlas",
@@ -162,6 +197,16 @@ def fetch_development_fmri(n_subjects: int = 5):
     from nilearn.datasets import fetch_development_fmri
 
     return fetch_development_fmri(n_subjects=n_subjects)
+
+
+def fetch_adhd(n_subjects: int = 40):
+    """Fetch the ADHD-200 resting-state fMRI subset (clinical: ADHD vs
+    typically-developing). Returns the nilearn Bunch (`.func`, `.confounds`,
+    `.phenotypic`). The phenotypic table carries the diagnosis label and the
+    site/motion covariates a group analysis must control for."""
+    from nilearn.datasets import fetch_adhd
+
+    return fetch_adhd(n_subjects=n_subjects)
 
 
 def load_bids_eeg(

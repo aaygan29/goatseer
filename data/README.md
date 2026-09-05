@@ -23,6 +23,9 @@ Two ways data enters the repo:
 | `harvard_oxford` | atlas | Subcortical ROIs (amygdala, thalamus, brainstem, ...) | `nilearn.datasets.fetch_atlas_harvard_oxford` (auto) | FSL; Makris et al. 2006 |
 | `ds000221` (MPI Leipzig LEMON) | EEG | Eyes-open vs eyes-closed WITHIN-subject contrast (Berger effect); substrate for within-subject decoding | `bash scripts/fetch_lemon_subset.sh` then `neurospine.io.load_bids_eeg` (script) | CC0-like MPI-CBS DUA; Babayan et al. 2019 |
 | `sleep_edfx` (PhysioNet Sleep-EDF Expanded) | EEG | Sleep-stage sequences with real transition structure; the trajectory-model positive control (ADR-018/019) | `bash scripts/fetch_sleep_edfx_subset.sh` then read PSG + Hypnogram EDFs (script) | Open Data Commons Attribution v1.0; Kemp et al. 2000, Goldberger et al. 2000 |
+| `adhd200` (ADHD-200) | fMRI | CLINICAL resting fMRI: ADHD vs typically-developing, with phenotypic labels. Validity-hardening line. Confounded by site/motion. | `neurospine.io.fetch_adhd(n_subjects)` (auto) | ADHD-200 Consortium open terms; ADHD-200 Consortium 2012 |
+| `ds002739` (Perceptual decision EEG+fMRI) | EEG+fMRI | Random-dot-motion decisions with trial choice/RT/confidence; within-trial evidence accumulation. Target for the decision-making trajectory experiment (ADR-018). | `openneuro.download(dataset='ds002739')` then mne_bids / nilearn (script) | OpenNeuro CC0; Rungratsameetaweemana et al. |
+| `ds003478` (EEG depression rest) | EEG | CLINICAL resting EEG: high-BDI vs low-BDI controls (Allen lab). Matches the existing EEG modality. | `openneuro.download(dataset='ds003478')` then `load_bids_eeg` (script) | OpenNeuro CC0; NEMAR ds003478 |
 
 ## How to fetch
 
