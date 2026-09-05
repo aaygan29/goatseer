@@ -100,6 +100,10 @@ from .manifold import (
     spd_tangent_embedding,
     spd_tangent_vector,
 )
+from .sequence_decode import (
+    SupervisedSequenceDecoder,
+    transition_gain,
+)
 from .signed_dynamics import (
     SignedLinearSystem,
     build_signed_system,
@@ -189,6 +193,9 @@ __all__ = [
     # Signed linear dynamics for inhibitory regulation (ADR-015)
     "SignedLinearSystem",
     "build_signed_system",
+    # Supervised sequence decoding (ADR-019)
+    "SupervisedSequenceDecoder",
+    "transition_gain",
     # Effective connectivity from real BOLD (ADR-016)
     "directed_influence",
     "discrete_steady_state",

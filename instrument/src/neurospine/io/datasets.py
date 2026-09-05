@@ -79,6 +79,18 @@ DATASETS = {
         status="script",
         url="https://openneuro.org/datasets/ds000221",
     ),
+    "sleep_edfx": DatasetInfo(
+        dataset_id="sleep_edfx",
+        modality="eeg",
+        role="PhysioNet Sleep-EDF Expanded: PSG + 30s hypnogram stages. A "
+             "task with genuine temporal transition structure (W/N1/N2/N3/"
+             "REM cycling), for the trajectory-model pivot (ADR-018/019).",
+        license="Open Data Commons Attribution v1.0; cite Kemp et al. 2000 "
+                "and Goldberger et al. 2000 (PhysioNet).",
+        fetch="scripts/fetch_sleep_edfx_subset.sh, then read PSG+Hypnogram EDFs",
+        status="script",
+        url="https://physionet.org/content/sleep-edfx/1.0.0/",
+    ),
     "schaefer_2018": DatasetInfo(
         dataset_id="schaefer_2018",
         modality="atlas",
