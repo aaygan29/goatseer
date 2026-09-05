@@ -54,3 +54,25 @@ p = 0.055). Two takeaways:
   `discriminant_axis` / `quantile_edges` / `assign_states`, verified in
   `tests/verification/test_discretize.py`.
 - `run.py`: the three arms, the MDM ceiling, and the supervised-pipeline null.
+
+## Post-hoc correction (n=20 + multi-agent literature review)
+
+More data and a literature sweep corrected the n=8 story. See ADR-017's
+post-hoc section and ADR-018 for the full account. In brief:
+
+- At **n=20** with the original 5-channel method the effect shrinks: MDM
+  0.604 -> 0.571, tangent-occupancy recovery +0.09 -> +0.04 (3/20 subjects,
+  group p = 0.075). Real but weak; the n=8 numbers were optimistic.
+- The `--channels motor --shrinkage ledoit` run **backfired to chance**:
+  Ledoit-Wolf shrinkage blurs the C3/C4 lateralization the decoder needs.
+  Grounding covariance choices in the benchmark protocol matters.
+- The "occupancy > transitions" result is **partly confounded**: binning
+  along the discriminant axis structurally favors occupancy.
+- eegbci is a **known-weak** motor-imagery dataset (~0.60 ceiling), and MI
+  signal is static ERD/ERS by established physiology, so a trajectory model
+  was never expected to help here. The program pivots to temporally-
+  structured tasks (ADR-018).
+
+The `--channels`, `--shrinkage`, and `--runs` flags are kept so this
+correction reproduces. `--channels minimal --shrinkage ridge --runs 4 8`
+is the original ADR-017 configuration.

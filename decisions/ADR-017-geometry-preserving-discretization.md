@@ -82,3 +82,51 @@ p = 0.045; subj 7: 0.917 vs MDM 1.000, p = 0.055). Two conclusions:
   state REPRESENTATION can retain the signal; where the signal is temporal
   (not the case here), the trajectory kernel would then have something to
   work with.
+
+## Post-hoc corrections (2026-09-05, multi-agent literature review)
+
+A two-agent literature sweep (computational-neuroscience/benchmarks and
+mathematics/neuropsychology) surfaced three corrections that a reviewer
+would raise, recorded here rather than buried:
+
+1. **The n=8 recovery was small-sample optimism.** Rerun at n=20 with the
+   same 5-channel method, the MDM ceiling falls 0.604 -> 0.571 and the
+   tangent-occupancy recovery falls +0.09 -> +0.04 (3/20 subjects, group
+   p = 0.075). The effect is real but weak and only marginally significant,
+   not the strong effect 8 subjects implied.
+2. **The "tightened" run (15 channels + Ledoit-Wolf) BACKFIRED to chance
+   (0.50).** Shrinkage pulls the covariance toward the isotropic identity,
+   which blurs the exact C3-vs-C4 variance lateralization the decoder needs.
+   More channels plus shrinkage was worse, not better. The lesson: pipeline
+   choices must be grounded in the benchmark protocol, not assumed.
+3. **A binning confound favors occupancy over transitions.** Because states
+   are binned ALONG the class-discriminant axis (chosen to separate the
+   marginal distribution), transitions are structurally disadvantaged
+   relative to occupancy. So "occupancy > transitions" is partly an
+   artifact of the discretization design, not a fully independent finding.
+   An unsupervised (Riemannian k-means) discretization would be the fair
+   comparison.
+
+Context corrections:
+
+- **The method is established, not novel.** Tangent-space discretization of
+  covariance trajectories is "Riemannian covariance-microstate analysis"
+  (see the SPD-manifold clustering review arXiv:2504.18882, and PMC11763639
+  on tangent-space k-means microstate clustering). The only increment here
+  is discriminant-axis binning plus a Markov chain on the symbol sequence.
+- **The finding is expected physiology, not a discovery.** Motor-imagery
+  discriminability is a sustained ERD/ERS mu/beta lateralization at C3/C4
+  (a static within-trial feature), which is exactly why single-covariance
+  Riemannian classifiers are state of the art and why a temporal model adds
+  nothing. Our Markov-null is consistent with decades of literature.
+- **eegbci is a known-weak dataset** (~0.60-0.65 population ceiling, high
+  per-subject variance; MOABB benchmarks arXiv:2607.22778, arXiv:2606.24394),
+  so near-chance per-subject is within the expected range independent of the
+  representation question.
+
+Net: ADR-017's demonstration that a geometry-preserving discretization
+retains more than the prototype one still holds directionally, but the
+effect is weak, partly confounded, and on a task where a trajectory model is
+not expected to help. The correct response is not to tune this harder but to
+move the trajectory apparatus to a task with genuine temporal structure
+(ADR-018).
