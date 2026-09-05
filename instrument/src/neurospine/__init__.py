@@ -22,6 +22,19 @@ from .abstention import (
     evaluate_triad,
     sign_concordance_binomial_p,
 )
+from .behavior import (
+    BehaviorMarkovModel,
+    OccupancyModel,
+    analyze_state_sequences,
+    class_log_likelihood,
+    evaluate_behavior_markov_model,
+    evaluate_occupancy_model,
+    fit_behavior_markov_model,
+    fit_occupancy_model,
+    predict_behavior,
+    predict_occupancy,
+    subject_disjoint_split,
+)
 from .calibration import SplitConformalCalibration
 from .circuit import (
     DirectedCircuit,
@@ -123,6 +136,18 @@ __all__ = [
     "TriadResult",
     "evaluate_triad",
     "sign_concordance_binomial_p",
+    # Behavior-from-state-sequence pipeline + occupancy ablation (reusable)
+    "BehaviorMarkovModel",
+    "OccupancyModel",
+    "analyze_state_sequences",
+    "class_log_likelihood",
+    "evaluate_behavior_markov_model",
+    "evaluate_occupancy_model",
+    "fit_behavior_markov_model",
+    "fit_occupancy_model",
+    "predict_behavior",
+    "predict_occupancy",
+    "subject_disjoint_split",
     # Manifold primitives (ADR-008)
     "Family",
     "LatentState",

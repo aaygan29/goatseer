@@ -57,9 +57,29 @@ Shared coordination log for parallel agents working in this repository.
 Nulls already present (label-shuffle with the (k+1)/(n+1) p-value) are
 correct and should stay.
 
+## Merge-blocking corrections: RESOLVED (2026-09-05)
+1. **Leakage FIXED by Copilot** (subject-disjoint split; prototypes fit on
+   train windows only). Verified.
+2. **Trajectory-vs-static ADDRESSED by Claude**: added the occupancy
+   (0th-order) baseline and a `trajectory_gain` gate; the verdict now
+   only claims "trajectories" when the Markov model beats BOTH the shuffle
+   null and occupancy. Also added the reusable `analyze_state_sequences`
+   engine and a bring-your-own-data `--input` path so anyone can run this
+   on their own discretized sequences.
+3. **Held-out test ADDED**: occupancy-ablation and engine tests evaluate on
+   held-out / synthetic ground truth.
+Also fixed a real portability bug: `itertools.pairwise` (Python 3.10+) in
+`behavior.py` broke the 3.9 suite; replaced with a local helper.
+
+Honest outcome on real data (n=20, subject-disjoint): no evidence above
+the shuffle null and negative trajectory gain. The pipeline correctly
+refuses to overclaim. Shipped as `feat/behavior-pipeline-reusable`.
+
 ## Change log
 - 2026-09-05 (Copilot): created coordination file; reserved
-  behavior-prediction module.
+  behavior-prediction module; fixed the leakage / split.
 - 2026-09-05 (Claude): reviewed the behavior pipeline, claimed the
-  integration-lead workstream, rebalanced review ownership, and recorded
-  the three corrections above (two of them merge-blocking).
+  integration-lead workstream, rebalanced review ownership, recorded the
+  three corrections; then added the occupancy ablation, the reusable
+  bring-your-own-data engine, the 3.9 portability fix, ran it on real EEG
+  (honest cross-subject null), and integrated it onto current main.
