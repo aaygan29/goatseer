@@ -173,13 +173,12 @@ by anatomy/electrode geometry, not dynamics. The specificity ablation
 caught a fingerprinting overclaim before it shipped. See
 `experiments/hmm_replicability/`.
 
-<<<<<<< HEAD
 To directly connect behavior to connectome state trajectories, see
 `experiments/connectome_behavior_prediction/`. It builds short
 trial-wise state sequences from public EEG-BCI and predicts T1/T2
 behavior labels with a class-conditional Markov model, then tests the
 result against a shuffled-label null.
-=======
+
 The propagation tier then grounded the model on a real connectome. ADR-013
 builds an anatomical thought-propagation model (Schaefer-100 +
 Harvard-Oxford subcortex) and ADR-014 the directed threat circuit: a
@@ -208,4 +207,3 @@ time-reversed-Granger control (Vinck et al. 2015; Chvostekova et al.
 inhibitory, group-significant (t=-2.29, p=0.031), and survives time
 reversal, so the sign that carried the ADR-015 prediction is
 data-corroborated rather than assumed.
->>>>>>> origin/main
