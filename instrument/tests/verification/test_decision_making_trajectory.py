@@ -15,9 +15,17 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT / "instrument" / "src"))
-sys.path.insert(0, str(REPO_ROOT / "experiments" / "decision_making_trajectory"))
 
-run = pytest.importorskip("run")
+
+import importlib.util as _ilu
+_spec = _ilu.spec_from_file_location(
+    "decision_trajectory_run",
+    str(REPO_ROOT / "experiments" / "decision_making_trajectory" / "run.py"))
+run = _ilu.module_from_spec(_spec)
+try:
+    _spec.loader.exec_module(run)
+except Exception as _e:  # missing optional deps -> skip like importorskip did
+    pytest.skip(f"cannot import decision run.py: {_e}", allow_module_level=True)
 
 
 class TestBandPower:

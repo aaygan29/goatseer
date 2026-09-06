@@ -17,9 +17,18 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(REPO_ROOT / "experiments" / "clinical_state_dynamics"))
 
-from run import cohens_d, mean_fd_from_confounds, permutation_test, residualize  # noqa: E402
+
+import importlib.util as _ilu
+_spec = _ilu.spec_from_file_location(
+    "clinical_dynamics_run",
+    str(REPO_ROOT / "experiments" / "clinical_state_dynamics" / "run.py"))
+_run = _ilu.module_from_spec(_spec)
+_spec.loader.exec_module(_run)
+cohens_d = _run.cohens_d
+mean_fd_from_confounds = _run.mean_fd_from_confounds
+permutation_test = _run.permutation_test
+residualize = _run.residualize
 
 
 def test_mean_fd_from_confounds(tmp_path: Path) -> None:
