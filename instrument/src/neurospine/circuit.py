@@ -19,6 +19,19 @@ The dynamics primitives in `dynamics.py` (committor, MFPT) then operate
 on the combined directed chain. They already accept asymmetric
 row-stochastic matrices, so no new probability math is introduced; this
 module only assembles the graph and tracks the observability boundary.
+
+External grounding for the region-to-decision handoff at the end of
+this chain: Takacs, Bimbard, Booth, Robacha, Shinn, Socha, Harris, Coen,
+Carandini 2026 (bioRxiv 10.64898/2026.06.05.730072) constrains a
+region's causal contribution to a downstream left/right-style decision
+to a signed ADDITIVE bias term on the action logit, separable from a
+multiplicative sensory-sensitivity term, with two such lesioned sources
+combining additively. This motivates treating an in-silico lesion of a
+node feeding a decision readout as a bias-vs-sensitivity dissociation
+test rather than a generic activity-magnitude change. See
+`literature/biorxiv-2026-06-05-730072.md`; mouse midbrain (superior
+colliculus), 2AFC scope caveat applies and this circuit does not
+currently implement or test that dissociation.
 """
 
 from __future__ import annotations

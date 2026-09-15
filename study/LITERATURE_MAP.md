@@ -17,7 +17,9 @@ after pubmed scan retry).
 | PerceptionDecoder baseline landscape | Deep learning fMRI reconstruction survey | arxiv-2110.09006 |
 | AffectDecoder taxonomy | Mineault, Griffiths, Escola 2026 (Cognitive Dark Matter) | cognitive-dark-matter-mineault-2603-03414 |
 | DecisionDecoder confound anchor | Reward positivity does not encode current reward value | biorxiv-2025-03-27-645774 |
+| DecisionDecoder / propagation-to-decision handoff (signed additive bias, separable from sensitivity, knockout test) | Takacs et al. 2026 bioRxiv (SC logistic decision) | biorxiv-2026-06-05-730072 |
 | MemoryDecoder temporal anchor | Yaghoubi et al. 2026 Nature (backward-shifted reward) | hippocampal-backward-shifted-reward-nature-09958 |
+| MemoryDecoder / memory-to-decision handoff (order-coded to choice-coded subspace geometry) | Li, Chrysanthidis, Brincat, Rose, Miller 2026 iScience (LPFC subspace reorganization) | isci-2026-117492 |
 | RewardDecoder temporal anchor | Same as MemoryDecoder | hippocampal-backward-shifted-reward-nature-09958 |
 | SubjectAdapter cross-subject shift | Jeon, Sobotka, Choi, Brbic (RAVEN) | raven-jeon-sobotka-2510-21332 |
 | SubjectAdapter amortization | Amortizing personalization in virtual brain twins | arxiv-2506.21155 |
