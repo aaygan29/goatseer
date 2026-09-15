@@ -71,5 +71,5 @@ these two fields), `neural_alignment_score` (directionally consistent, underpowe
   derivatives and individual data (the memory's own stated gap for the direct
   neural<->behavioral link, L6, still abstained).
 - [ ] Submit to NBDT (diamond open access, no fee) per the plan in `submission/`; complete
-  the outstanding author-metadata TODOs (affiliation, ORCID, Gowthaam co-authorship call)
+  the outstanding author-metadata TODOs (affiliation, ORCID)
   before submitting.
