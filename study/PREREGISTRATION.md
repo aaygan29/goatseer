@@ -11,7 +11,7 @@ from neural and behavioral recordings.
 
 ## Authors
 
-To be finalized before lock. The author (lead).
+To be finalized before lock. Aayush Gandhi (lead).
 
 ## Hypotheses
 

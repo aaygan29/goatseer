@@ -1,8 +1,8 @@
 # jspace-loyalty: evaluation
 
-- External home: the `jspace-loyalty` repository (confirmed via `gh repo view`: private,
+- External home: github.com/aaygan29/jspace-loyalty (confirmed via `gh repo view`: private,
   default branch `main`, pushed 2026-08-18). Note: this file previously listed
-  the `secret-loyalties` repository per `ORGANIZATION.md`'s older recording; that repo no
+  `github.com/aaygan29/secret-loyalties` per `ORGANIZATION.md`'s older recording; that repo no
   longer resolves via `gh` and per `MEMORY_LINKS.md`/memory it has been superseded and folded
   into `jspace-loyalty`. Corrected here; flag `ORGANIZATION.md` for a sync.
 - Status: active

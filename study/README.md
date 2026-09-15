@@ -49,7 +49,7 @@ predict, from the Cognitive Dark Matter taxonomy.
 - Every load-bearing claim cites external published work per ADR-002.
 - Every fMRI-grounded prediction passes the Goltermann/Huth triad before
   it is reported as a claim.
-- The author's prior projects contribute engineering only, re-verified
+- Aayush's prior projects contribute engineering only, re-verified
   externally per ADR-003 before feeding any gate.
 - Individual-scale replicability is measured, not asserted. Test-retest
   on the same subject is the first gate before any cross-subject work.

@@ -6,7 +6,7 @@ Accepted, 2026-09-04.
 
 ## Context
 
-The prior ticks built a decoder and a study protocol. The author's
+The prior ticks built a decoder and a study protocol. Aayush's
 2026-09-04 correction:
 
 > Make the actual product mathematically accurate and valid and
