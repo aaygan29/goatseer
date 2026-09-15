@@ -29,6 +29,17 @@ Implementation notes:
 - Dependency-light: numpy + scipy only, consistent with the rest of
   `neurospine`.
 
+External grounding for the memory-to-decision handoff a downstream
+decision stage would read off this embedding: Li, Chrysanthidis,
+Brincat, Rose, Miller 2026 (iScience, doi 10.1016/j.isci.2026.117492)
+constrains that handoff to be a GEOMETRIC transform of the state
+representation (order-coded subspace reorganizing into a choice-coded
+subspace, with a measurable post-decision alignment/expansion
+signature), not a scalar comparison. See
+`literature/isci-2026-117492.md`. This is a constraint on how a
+decision-stage read-out of the tangent embedding should be evaluated,
+not a claim that NEUROSPINE has reproduced the signature.
+
 References (external anchors):
 
 - Rabiner, "A Tutorial on Hidden Markov Models" (Proc. IEEE, 1989).

@@ -55,10 +55,21 @@ implementations live under `experiments/<decoder>/`.
 - `DecisionDecoder`: fits a hierarchical drift-diffusion model whose
   drift and threshold parameters are functions of neural state. Input:
   behavioral RT + choice + concurrent neural signal. Output: DDM
-  parameters and choice probability.
+  parameters and choice probability. The region-to-decision handoff
+  (a region's contribution as a signed additive bias on the action
+  logit, separable from a multiplicative sensitivity term, with an
+  in-silico-lesion knockout test) is constrained by Takacs et al. 2026
+  bioRxiv (superior-colliculus logistic decision); see
+  `literature/biorxiv-2026-06-05-730072.md`. Mouse midbrain, 2AFC scope
+  caveat applies.
 - `MemoryDecoder`: predicts recall probability and the temporal shift
   of encoded reward information, anchored on the Yaghoubi hippocampal
-  backward-shift finding.
+  backward-shift finding. The memory-to-decision handoff itself (a
+  geometric transform from order-coded to choice-coded neural subspaces,
+  with a testable post-decision alignment/expansion signature) is
+  constrained by Li, Chrysanthidis, Brincat, Rose, Miller 2026 iScience;
+  see `literature/isci-2026-117492.md`. Two-NHP, small discrete
+  option-set, correlational scope caveat applies.
 - `RewardDecoder`: predicts anticipation strength from NAcc BOLD and
   behavioral cues.
 
