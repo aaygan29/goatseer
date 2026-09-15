@@ -1,6 +1,6 @@
 # tribe-neuroprint: evaluation
 
-- External home: the `neuroprint-api` repository (recorded path `~/Desktop/Research/neuroprint-api/`
+- External home: github.com/aaygan29/neuroprint-api (recorded path `~/Desktop/Research/neuroprint-api/`
   no longer exists on disk as of this pass; likely moved or folded into the TRIBE v2 / Neuroethics
   submission trees during the 2026-08-23 Research reorg. Not re-verified live; treat path as stale
   until confirmed.)

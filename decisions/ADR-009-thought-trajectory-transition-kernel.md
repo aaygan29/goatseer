@@ -9,7 +9,7 @@ Accepted, 2026-09-04.
 ADR-008 built the Riemannian-topological cartography and the
 purpose-constrained intervention scorer. A thought was still a
 per-timepoint read: given `(subject, recordings, context_t)`, return
-a `Thought`. The author pushed the framing on 2026-09-04:
+a `Thought`. Aayush pushed the framing on 2026-09-04:
 
 > My theory here is that you can use this kind of mathematical
 > computation to derive the process of where a thought travels

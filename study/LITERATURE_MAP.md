@@ -69,7 +69,7 @@ See `../literature/SYNTHESIS_biomedical.md` for the full table.
 
 ## Mathematical / computational-neuroscience anchors (tick 3, 2026-09-04)
 
-Directly added by the author's request for strongly math-based computational
+Directly added by Aayush's request for strongly math-based computational
 neuroscience literature. Full notes under `../literature/`.
 
 | Component / concern | Anchor | Slug |

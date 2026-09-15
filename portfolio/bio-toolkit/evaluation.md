@@ -1,6 +1,6 @@
 # bio-toolkit: evaluation
 
-- External home: the `bio-toolkit` repository (confirmed via `gh repo view`: public, default
+- External home: github.com/aaygan29/bio-toolkit (confirmed via `gh repo view`: public, default
   branch `main`, pushed 2026-09-03). No local checkout inspected this pass; scored from metadata
   and memory only. Contents not independently verified beyond `gh`'s repo-level metadata.
 - Status: active
