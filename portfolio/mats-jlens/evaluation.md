@@ -1,6 +1,6 @@
 # mats-jlens: evaluation
 
-- External home: github.com/aaygan29/mats_task (confirmed via `gh repo view`: private, default
+- External home: the `mats_task` repository (confirmed via `gh repo view`: private, default
   branch `main`, pushed 2026-08-15). No local checkout found on disk this pass.
 - Status: active
 - Last scored: 2026-09-03

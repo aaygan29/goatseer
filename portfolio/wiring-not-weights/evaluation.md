@@ -2,7 +2,7 @@
 
 - External home: `~/Desktop/Research/projects/Neuroscience/Neuro-AI/wiring-not-weights/`
   (confirmed present: HCP_DATA_INSTRUCTIONS.md, PREREG_exp01_apparatus.md, README.md, RESULTS.md,
-  SCOPE_exp04_real_mve.md, exp01-exp06 scripts, paper/, results/). Note: `aaygan29/wiring-not-weights`
+  SCOPE_exp04_real_mve.md, exp01-exp06 scripts, paper/, results/). Note: `wiring-not-weights`
   does not resolve via `gh repo view` (checked this pass); the memory's claim of a pushed personal
   GitHub repo could not be confirmed live: treat as unverified until re-checked with a working
   `gh` auth or by asking the user for the current remote status.
@@ -69,7 +69,7 @@ powered real-data reconstruction dataset.
   stated gap; HCP-identification would only reproduce the already-conceded ABIDE
   identification result, not adjudicate the reconstruction thesis): the single highest-
   leverage next step for this project.
-- [ ] Re-verify the `aaygan29/wiring-not-weights` GitHub remote status; `gh repo view`
+- [ ] Re-verify the `wiring-not-weights` GitHub remote status; `gh repo view`
   could not resolve it this pass, which conflicts with the memory's "pushed" record.
 - [ ] Report an explicit per-participant sign-concordance binomial (G-fMRI.2) once a
   powered reconstruction dataset is available, to actually complete the fMRI triad.

@@ -1,6 +1,6 @@
 # decision-phenotype: evaluation
 
-- External home: github.com/aaygan29/decision-phenotype (confirmed via `gh repo view`: public,
+- External home: the `decision-phenotype` repository (confirmed via `gh repo view`: public,
   default branch `main`, pushed 2026-08-21). Local checkout confirmed at
   `~/Desktop/Research/projects/Neuroscience/decision_phenotype/` (reproduce.py, tests/, results/,
   figures/, submission/ all present).
@@ -71,5 +71,5 @@ these two fields), `neural_alignment_score` (directionally consistent, underpowe
   derivatives and individual data (the memory's own stated gap for the direct
   neural<->behavioral link, L6, still abstained).
 - [ ] Submit to NBDT (diamond open access, no fee) per the plan in `submission/`; complete
-  the outstanding author-metadata TODOs (affiliation, ORCID, Gowthaam co-authorship call)
+  the outstanding author-metadata TODOs (affiliation, ORCID, co-authorship call)
   before submitting.

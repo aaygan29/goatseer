@@ -3,7 +3,7 @@
 - External home: `~/Desktop/Research/projects/Neuroscience/Neuro-AI/_SIBLING_consciousness-selfstate/cortex-of-anyone/`
   (confirmed present: README.md, data/, enrollment/, experiments/, neuro_ai_core/, results/, tests/,
   validate_all.py). That folder's own README flags **13 uncommitted local changes** as of the last
-  reorg pass: a real hygiene risk, not resolved by this evaluation. `aaygan29/cortex-of-anyone`
+  reorg pass: a real hygiene risk, not resolved by this evaluation. `cortex-of-anyone`
   does not resolve via `gh repo view`; per memory the real integration lives on branches
   (`cortex-of-anyone-integration`, `cortex-of-anyone-live-brain`) pushed to the
   `The-Sapient-Company/sapient` org repo, not a personal repo of this name.

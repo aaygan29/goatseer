@@ -3,7 +3,7 @@
 - External home: local only, `~/Desktop/Research/projects/Neuroscience/Neuro-AI/spikeprint/`
   (confirmed present: CITATION.cff, LICENSE, PREREGISTRATION.md, README.md, REFERENCES.md, data/,
   docs/, results/, scripts/, tests/, pyproject.toml). Confirmed via `gh repo view` that
-  `aaygan29/spikeprint` does **not** exist on GitHub yet: consistent with the memory's own
+  `spikeprint` does **not** exist on GitHub yet: consistent with the memory's own
   "NOT pushed, push private repo LAST" sequencing choice.
 - Status: proposed (substantial code and real-data results exist, but the project has not been
   greenlit as a finished line and is not yet public)

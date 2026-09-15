@@ -1,9 +1,9 @@
 # Memory links
 
-Cross-reference from portfolio slugs to Aayush's auto-memory entries. Keep in
+Cross-reference from portfolio slugs to the author's auto-memory entries. Keep in
 sync when memories are renamed or retired.
 
-Auto-memory root: `/Users/aayushgandhi/.claude/projects/-Users-aayushgandhi/memory/`.
+Auto-memory root: the author's local Claude memory directory (not included in this repository).
 
 | Portfolio slug | Memory file(s) |
 | --- | --- |
@@ -37,6 +37,6 @@ Auto-memory root: `/Users/aayushgandhi/.claude/projects/-Users-aayushgandhi/memo
 | Banned rhetorical patterns | `feedback_banned_rhetorical_patterns.md` |
 | Verify before reporting | `feedback_verify_before_reporting.md` |
 | Anonymization doctrine for double-blind | `feedback_submission_anonymization.md` |
-| No Claude co-author trailer on Aayush's commits | `feedback_git_workflow.md` |
+| No Claude co-author trailer on the author's commits | `feedback_git_workflow.md` |
 | Close recommendations before moving on | `feedback_close_recommendations_before_moving_on.md` |
 | iCloud Desktop git hazards | `reference_icloud_desktop_git_hazards.md` |

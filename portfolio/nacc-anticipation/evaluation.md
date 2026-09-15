@@ -1,9 +1,9 @@
 # nacc-anticipation: evaluation
 
-- External home: recorded as github.com/aaygan29/NAcc_benchmark in `ORGANIZATION.md`, but this repo
+- External home: recorded as the `NAcc_benchmark` repository in `ORGANIZATION.md`, but this repo
   does **not** resolve via `gh repo view` this pass (checked directly). The real, active work is the
   PR against `harbor-framework/terminal-bench-science` (#721) from fork
-  `aaygan29/terminal-bench-science`, branch `add-nacc-anticipation-decoding`. Local clone confirmed at
+  `terminal-bench-science`, branch `add-nacc-anticipation-decoding`. Local clone confirmed at
   `~/Desktop/Research/submissions/neuroscience/tb-science/tbsci-fork/` (task-template.toml, ci_checks/,
   tasks/, rubrics/ all present). Treat `NAcc_benchmark` as a stale record-repo reference and prefer
   the fork/PR as the source of truth.
@@ -63,7 +63,7 @@ for G5 methodology on any other fMRI-grounded project in this portfolio.
 
 ## Open action items
 
-- [ ] Reconcile the `ORGANIZATION.md` external-home entry (`aaygan29/NAcc_benchmark`,
+- [ ] Reconcile the `ORGANIZATION.md` external-home entry (`NAcc_benchmark`,
   unresolvable via `gh`) with the actual active location (the fork/PR); this file now
   points at the fork, but the top-level map should match.
 - [ ] Track PR #721 to merge or address any remaining reviewer feedback beyond the

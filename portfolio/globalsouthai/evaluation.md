@@ -3,7 +3,7 @@
 - External home: `~/Desktop/Research/submissions/neuro-ai/submissions/globalsouthai/` (confirmed
   present: CITATIONS.md, METHODS.md, OVERVIEW.md, README.md, code/, data/, figures/, latex/,
   paper.pdf). This is under `submissions/`, so findings drawn from this specific artifact satisfy
-  the citation rule for "Aayush's own work as an established finding," subject to the venue's
+  the citation rule for "the author's own work as an established finding," subject to the venue's
   actual acceptance status below.
 - Status: submitted (regular deadline Sep 5 2026 AoE for GlobalSouthAI @ NeurIPS 2026; non-archival,
   double-blind affinity workshop). Scoring here is retrospective on the submitted artifact, not on
@@ -25,7 +25,7 @@ measured electoral influence.
 
 | Gate | Status | Note |
 | --- | --- | --- |
-| G1 provenance/leakage        | pass | The refusal-asymmetry finding is a real, independently published external result (Dai et al.) with a DOI/arXiv id, reused under citation, not re-derived by Aayush; own-instrument components (forecaster, WARDEN-style check) are clearly separated from the borrowed result. |
+| G1 provenance/leakage        | pass | The refusal-asymmetry finding is a real, independently published external result (Dai et al.) with a DOI/arXiv id, reused under citation, not re-derived by the author; own-instrument components (forecaster, WARDEN-style check) are clearly separated from the borrowed result. |
 | G2 seed variance (n>=5)      | n/a | The headline quantitative result is a third-party published statistic, not this project's own model output to sweep over seeds. |
 | G3 specification robustness  | n/a | |
 | G4 specificity ablation      | pass | The source paper's own Western-topic specificity control is explicitly carried into this paper's use of the finding, rather than the refusal-asymmetry number being used context-free. |

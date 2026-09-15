@@ -9,7 +9,7 @@ Accepted, 2026-09-03.
 The initial scaffold framed NEUROSPINE as an AI auditing instrument: given
 a `(model, subject, task)` triple, return a `Decision` tuple with answer,
 calibrated confidence, abstention, loyalty vector, sparse circuit id,
-neural alignment, and honesty verdict. Aayush corrected on 2026-09-03:
+neural alignment, and honesty verdict. The author corrected on 2026-09-03:
 
 > That is not what we needed you to make. I needed you to make a
 > synthesized combined new neuro-ai project that allowed you to basically
@@ -37,7 +37,7 @@ And again, expanding scope:
 
 NEUROSPINE is not an auditor. It is a new research study for individual
 and group scale thought / behavior prediction from neural + behavioral
-recordings, synthesized from the seed literature, Aayush's prior Neuro-AI
+recordings, synthesized from the seed literature, the author's prior Neuro-AI
 portfolio (engineering only, per ADR-002), and a wider literature scan
 across brain mechanics, network topology, biomechanics, physics of
 neural systems, computational neuroscience, and data analytics for

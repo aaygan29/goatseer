@@ -16,8 +16,8 @@ to avoid fragmentation and ensure reproducibility.
 ### Program identity
 
 - Program name: NEUROSPINE.
-- Repository slug: NEW_REPO (internal, aayushgandhi/NEW_REPO on GitHub).
-- Organization: aaygan29.
+- Repository slug: NEW_REPO (internal name; published as `goatseer`).
+- Organization: the author's GitHub account.
 
 ### In-scope portfolio projects at inception
 

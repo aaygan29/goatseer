@@ -1,7 +1,7 @@
 # pereverzev-neuro-extension: evaluation
 
 - External home: none; not the user's own repo. The base result being extended is Igor
-  Pereverzev's (not affiliated with Aayush), documented on his Substack/LessWrong. No code, plan
+  Pereverzev's (not affiliated with the author), documented on his Substack/LessWrong. No code, plan
   document, or repo for the extension itself was found this pass.
 - Status: proposed (discussed only; not started per memory)
 - Last scored: 2026-09-03
@@ -53,7 +53,7 @@ score, not because anything has failed.
 
 Pereverzev's own base result (retrain-vs-frozen monitor test; Stein's-lemma detection
 bound; Part 1's flawed metric self-retracted in Part 2) is a third party's published,
-external work, not Aayush's, so it is citable as an established finding on its own terms
+external work, not the author's, so it is citable as an established finding on its own terms
 once the extension is planned. Any claim from the extension itself is unscored/exploratory
 until built.
 
