@@ -1,6 +1,6 @@
 # warden: evaluation
 
-- External home: github.com/aaygan29/warden (confirmed via `gh repo view`: public, default branch
+- External home: the `warden` repository (confirmed via `gh repo view`: public, default branch
   `main`, pushed 2026-08-16, described by its own repo metadata as a "simulated-data reference
   skeleton"). Source project docs also live outside `~/Desktop/Research` at
   `~/.claude-science/orgs/.../workspaces/.../` per memory (not re-verified this pass).

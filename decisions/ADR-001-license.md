@@ -8,7 +8,7 @@ GitHub repo creation.
 ## Context
 
 The program brief specified MIT. GitHub's repo-creation flow installed the
-Unlicense by default. Aayush directed on 2026-09-03: use the most restrictive
+Unlicense by default. The author directed on 2026-09-03: use the most restrictive
 option among GitHub's preexisting licenses.
 
 GitHub's license picker (backed by choosealicense.com) offers a small set of

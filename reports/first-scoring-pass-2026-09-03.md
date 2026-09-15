@@ -21,7 +21,7 @@ summary; per-project detail and citations live in each `evaluation.md`.
 | cultist | yellow | G8 fail: apparatus validated on synthetic ground truth only; real corpus not yet run. | Make the described "2-line change" to a real public corpus loader + learned encoder. |
 | wiring-not-weights | green | G-fMRI.3 honest fail: reconstruction claim null at N=8 (underpowered, not disconfirmed). | Obtain a many-subject stimulus-evoked reconstruction dataset; this is the program's stated gap. |
 | cortex-of-anyone | green | G6 honest fail: the Hopf dynamical-twin mechanism model does not reproduce the validated consciousness signature. | Replace the Hopf twin with an anesthesia-parameterized neural-mass model, or open a retirement ADR. |
-| nacc-anticipation | yellow | External-home record is stale (`aaygan29/NAcc_benchmark` does not resolve); active work is a PR on a fork. | Point `ORGANIZATION.md` at the fork/PR and track PR #721 to merge. |
+| nacc-anticipation | yellow | External-home record is stale (`NAcc_benchmark` does not resolve); active work is a PR on a fork. | Point `ORGANIZATION.md` at the fork/PR and track PR #721 to merge. |
 | bio-toolkit | yellow | Scope: does not map onto any NEUROSPINE tuple field; contents not inspected this pass. | Inspect subproject contents, and settle whether it belongs in this portfolio at all. |
 | warden | yellow | G7/G1: pilot real-data results explicitly excluded from the citable-evidence whitelist. | Take H1 (best literature-grounded head) to a validated real-data result end to end. |
 | affectprint | red | No code exists; proposal only. | Resolve overlap with `cortex-of-anyone`'s G3 result before building a parallel apparatus. |

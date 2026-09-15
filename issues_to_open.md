@@ -12,7 +12,7 @@ Everything here becomes a live issue, a PR, or an ADR retiring it.
       stack: 5 notes). Round-3 still open: multimodal EEG-fMRI
       fusion (broader query needed), naturalistic movie decoding at
       scale, cross-subject generalization beyond RAVEN.
-- [x] Enabled Issues and Projects on `aaygan29/NEW_REPO`
+- [x] Enabled Issues and Projects on `NEW_REPO`
       (2026-09-04).
 - [x] Labels created 2026-09-04: `lit-review`, `gate-fail`,
       `instrument`, `retirement`, `blocked-on-auth`, `synthetic-first`,
@@ -26,17 +26,17 @@ Everything here becomes a live issue, a PR, or an ADR retiring it.
       and for `decision-phenotype` (issue #9, NAcc/insula loss channel
       at n=40). Helper landed this tick: `neurospine.evaluate_triad`.
 
-## Requires user action (Aayush)
+## Requires user action (the author)
 
 - [ ] Confirm the tribe-neuroprint external home path (recorded as
       `~/Desktop/Research/neuroprint-api/` but does not resolve). If
       the code moved, name the new path.
-- [ ] Confirm `aaygan29/NAcc_benchmark` status; the fork with PR #721
+- [ ] Confirm `NAcc_benchmark` status; the fork with PR #721
       to `terminal-bench-science` is what NEUROSPINE tracks; the
       original repo does not resolve via `gh`.
 - [ ] Grant access to private repos NEUROSPINE will PR against:
-      `aaygan29/behavioral_decoding`, `aaygan29/decision-phenotype`,
-      `aaygan29/jspace-loyalty`. Confirm each reachable via `gh`.
+      `behavioral_decoding`, `decision-phenotype`,
+      `jspace-loyalty`. Confirm each reachable via `gh`.
 - [ ] Confirm the anonymous.4open.science mirror for `jspace-loyalty`
       is up before the next NewInML resubmission window.
 - [ ] Authorize `plugin:engineering:github` in an interactive

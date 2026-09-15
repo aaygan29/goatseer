@@ -9,7 +9,7 @@ names change or projects are retired.
 | --- | --- |
 | `README.md` | Program overview, instrument contract, hard rules. |
 | `ORGANIZATION.md` | This file. Path map. |
-| `MEMORY_LINKS.md` | Cross-references to Aayush's auto-memory entries. |
+| `MEMORY_LINKS.md` | Cross-references to the author's auto-memory entries. |
 | `issues_to_open.md` | Queued GitHub actions and human-in-the-loop items. |
 | `LICENSE` | AGPL-3.0 (see `decisions/ADR-001-license.md`). |
 | `Makefile` | `make test`, `make install-dev`, `make lint`, `make clean`. |
@@ -33,19 +33,19 @@ Active:
 
 | Slug | External home | Notes |
 | --- | --- | --- |
-| `tribe-neuroprint` | Path unresolved as of 2026-09-03 scoring. Confirm with Aayush. | TRIBE v2 pipeline. Paper 1 claim retired via ADR-005. |
+| `tribe-neuroprint` | Path unresolved as of 2026-09-03 scoring. Confirm with the author. | TRIBE v2 pipeline. Paper 1 claim retired via ADR-005. |
 | `ism-v1` | Modal pipeline, local | Interoceptive Self-Model v1. |
 | `anesthesia-bridge` | `ds003171` + LLM battery | Propofol grading. Green on 2026-09-03 scoring, blocked on G-fMRI.2. |
 | `memoryprint` | NSD / BMD local | Idiographic memory to behavior. |
-| `behavioral-decoding` | `aaygan29/behavioral_decoding` (private) | AIxBio Africa. |
-| `decision-phenotype` | `aaygan29/decision-phenotype` | AIM-DDM + C1 to C5. Green on 2026-09-03 scoring, blocked on G-fMRI.2. |
-| `jspace-loyalty` | `aaygan29/jspace-loyalty` | NewInML NeurIPS 2026; second-model replication blocked on hardware. |
+| `behavioral-decoding` | `behavioral_decoding` (private) | AIxBio Africa. |
+| `decision-phenotype` | `decision-phenotype` | AIM-DDM + C1 to C5. Green on 2026-09-03 scoring, blocked on G-fMRI.2. |
+| `jspace-loyalty` | `jspace-loyalty` | NewInML NeurIPS 2026; second-model replication blocked on hardware. |
 | `mats-jlens` | Local | Qwen3-4B multi-hop, J-space vs unembedding. |
 | `cultist` | `~/Desktop/Research/cultist` | B(s) = E + V - R, latent-fusion. |
 | `wiring-not-weights` | Local | Identity in weights, ablation ladder. Green on 2026-09-03 scoring, gap is data. |
 | `cortex-of-anyone` | Blueprint doc + local | Deployment envelope; T1 feasible. Hopf twin retired via ADR-006. |
-| `nacc-anticipation` | fork with PR #721 to `terminal-bench-science` | GitHub remote path was `aaygan29/NAcc_benchmark`, unresolved as of 2026-09-03; the active work is the fork PR. |
-| `bio-toolkit` | `aaygan29/bio-toolkit` | Consolidated bio infra. Does not map to any NEUROSPINE tuple field. |
+| `nacc-anticipation` | fork with PR #721 to `terminal-bench-science` | GitHub remote path was `NAcc_benchmark`, unresolved as of 2026-09-03; the active work is the fork PR. |
+| `bio-toolkit` | `bio-toolkit` | Consolidated bio infra. Does not map to any NEUROSPINE tuple field. |
 
 Proposed / earlier:
 

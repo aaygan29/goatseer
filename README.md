@@ -7,7 +7,6 @@ state is a point on a curved manifold, a thought is a path across it, and a
 stimulus-to-behavior response is a probability flow over real brain regions.
 Every claim is tied to published external work and gated behind a test.
 
-Owner: Aayush Gandhi (`aaygan29`). License: see `LICENSE`.
 
 ---
 

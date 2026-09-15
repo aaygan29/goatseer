@@ -8,7 +8,7 @@ Accepted, 2026-09-04.
 
 Through ADR-009 to ADR-012 the trajectory dynamics ran on an
 ANATOMY-FREE state space: SPD covariance matrices of 5 EEG channels,
-discretized into abstract prototype states. Aayush named this a
+discretized into abstract prototype states. The author named this a
 grievous error on 2026-09-04:
 
 > I want mathematical probabilistic representations of thought patterns

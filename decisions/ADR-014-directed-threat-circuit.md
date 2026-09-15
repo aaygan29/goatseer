@@ -6,7 +6,7 @@ Accepted, 2026-09-04.
 
 ## Context
 
-ADR-013 built a propagation model on a cortical connectome. Aayush's
+ADR-013 built a propagation model on a cortical connectome. The author's
 critique on 2026-09-04 exposed that this is scientifically insufficient
 for a real stimulus response:
 

@@ -7,18 +7,18 @@ Accepted, 2026-09-03.
 ## Context
 
 ADR-002 established that NEUROSPINE leans on external citations and does not
-cite Aayush's prior projects as authority. It also said extracted code must
+cite the author's prior projects as authority. It also said extracted code must
 get a fresh external check before it contributes to any gate scoring. This
 ADR spells out how.
 
 The failure mode we are ruling out: an undetected bug in a prior project
 props up a NEUROSPINE claim. A reviewer finds the prior bug; the
-NEUROSPINE claim falls with it. This is the "circular error" risk Aayush
+NEUROSPINE claim falls with it. This is the "circular error" risk the author
 named on 2026-09-03.
 
 ## Decision
 
-Every extraction from a prior Aayush project follows this protocol before it
+Every extraction from a prior project by the author follows this protocol before it
 can raise any gate in `portfolio/<slug>/evaluation.md` above `unscored`.
 
 ### Step 1: name the bit
@@ -86,7 +86,7 @@ gates the extraction touches move above `unscored`.
 - Some prior work will have no viable external anchor. That is a signal to
   either find the anchor (best) or keep the bit purely archival (fine).
 - The `instrument/tests/verification/` directory becomes the trust boundary
-  between "engineering from Aayush's prior work" and "gate-relevant
+  between "engineering from the author's prior work" and "gate-relevant
   behavior in NEUROSPINE."
 
 ## Consequences NOT accepted

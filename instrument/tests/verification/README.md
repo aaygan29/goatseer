@@ -2,7 +2,7 @@
 
 External re-verification tests per ADR-003.
 
-Each file here proves that a bit extracted from a prior Aayush project
+Each file here proves that a bit extracted from a prior project by the author
 still matches its external anchor (a public dataset, a reference
 implementation, or a specific published claim). Until an extraction has a
 passing verification test here, the gates it feeds in

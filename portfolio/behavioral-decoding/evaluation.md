@@ -1,6 +1,6 @@
 # behavioral-decoding: evaluation
 
-- External home: github.com/aaygan29/behavioral_decoding (confirmed via `gh repo view`: public,
+- External home: the `behavioral_decoding` repository (confirmed via `gh repo view`: public,
   default branch `main`, pushed 2026-08-23).
 - Status: active
 - Last scored: 2026-09-03

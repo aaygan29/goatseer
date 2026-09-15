@@ -6,10 +6,10 @@ Accepted, 2026-09-03.
 
 ## Context
 
-NEUROSPINE draws engineering from Aayush's prior projects (TRIBE pipeline,
+NEUROSPINE draws engineering from the author's prior projects (TRIBE pipeline,
 NeuroPrint, ISM, jspace-loyalty, decision-phenotype, cultist, memoryprint,
 and so on). The default assumption in a research repo is that its own prior
-work is the theoretical basis. Aayush pushed back on 2026-09-03:
+work is the theoretical basis. The author pushed back on 2026-09-03:
 
 > I don't want to internally cite my own work because I'll have a hard time
 > explaining it and explaining specifically all the things contained within.
@@ -28,7 +28,7 @@ Then, sharpening the concern:
 
 The concrete risks:
 
-1. **Defensive burden.** Every internal citation is a claim Aayush must
+1. **Defensive burden.** Every internal citation is a claim the author must
    defend on the spot. External peer-reviewed citations shift the defense to
    the venue.
 2. **Circular error.** An undetected bug in a prior project silently props
@@ -45,7 +45,7 @@ literature notes, and paper drafts written from here on.
 metric is anchored to an already-published external reference. The
 literature index at `literature/` is the citation source of first resort.
 
-**2. Do not cite Aayush's prior projects as authority.** Not in docstrings.
+**2. Do not cite the author's prior projects as authority.** Not in docstrings.
 Not in READMEs. Not in ADR bodies. Not in paper drafts. Even for artifacts
 that are already peer-reviewed or under formal submission, prefer a stronger
 external anchor when one exists.
